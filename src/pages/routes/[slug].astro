@@ -2,7 +2,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import JoinBanner from '../../components/JoinBanner.astro';
 import { getCollection, getEntry, render } from 'astro:content';
-import { WHATSAPP_GROUP_URL } from '../../config';
 
 export async function getStaticPaths() {
   const routes = await getCollection('routes');
@@ -109,17 +108,6 @@ const difficultyLabel: Record<string, string> = {
         </div>
       )}
 
-      <!-- WhatsApp CTA -->
-      <div class="text-center pt-8 border-t border-zinc-800">
-        <a
-          href={WHATSAPP_GROUP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-block bg-white text-zinc-950 font-bold px-8 py-4 rounded hover:bg-zinc-100 transition-colors"
-        >
-          Discuss This Route on WhatsApp
-        </a>
-      </div>
     </div>
   </section>
 
