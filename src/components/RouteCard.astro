@@ -1,0 +1,39 @@
+---
+interface Props {
+  title: string;
+  distance_km: number;
+  duration_days: number;
+  difficulty: string;
+  hero_image: string;
+  slug: string;
+}
+
+const { title, distance_km, duration_days, difficulty, hero_image, slug } = Astro.props;
+
+const difficultyLabel: Record<string, string> = {
+  easy: '★☆☆☆☆ Easy',
+  moderate: '★★★☆☆ Moderate',
+  challenging: '★★★★☆ Challenging',
+  epic: '★★★★★ Epic',
+};
+---
+
+<a href={`/routes/${slug}`} class="block group bg-zinc-900 rounded overflow-hidden hover:bg-zinc-800 transition-colors">
+  <div class="aspect-video bg-zinc-800 overflow-hidden">
+    <img
+      src={hero_image}
+      alt={title}
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+  </div>
+  <div class="p-4">
+    <h3 class="text-white font-bold text-lg mb-2">{title}</h3>
+    <div class="flex flex-wrap gap-3 text-sm text-zinc-400">
+      <span>{distance_km} KM</span>
+      <span>·</span>
+      <span>{duration_days} {duration_days === 1 ? 'Day' : 'Days'}</span>
+    </div>
+    <p class="text-zinc-500 text-sm mt-2">{difficultyLabel[difficulty] ?? difficulty}</p>
+  </div>
+</a>

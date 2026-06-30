@@ -1,0 +1,55 @@
+---
+interface Props {
+  title: string;
+  author?: string;
+  date: string;
+  type: 'story' | 'video';
+  excerpt: string;
+  hero_image: string;
+  slug: string;
+  youtube_url?: string;
+  featured?: boolean;
+}
+
+const { title, author, date, type, excerpt, hero_image, slug, youtube_url, featured = false } = Astro.props;
+
+const href = type === 'video' && youtube_url ? youtube_url : `/stories/${slug}`;
+const isExternal = type === 'video' && !!youtube_url;
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('en-MY', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  });
+}
+---
+
+<a
+  href={href}
+  target={isExternal ? '_blank' : undefined}
+  rel={isExternal ? 'noopener noreferrer' : undefined}
+  class="block group bg-zinc-900 rounded overflow-hidden hover:bg-zinc-800 transition-colors"
+>
+  <div class={`bg-zinc-800 overflow-hidden ${featured ? 'aspect-[16/9]' : 'aspect-video'}`}>
+    <div class="relative w-full h-full">
+      <img src={hero_image} alt={title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+      {type === 'video' && (
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="bg-black/60 rounded-full w-14 h-14 flex items-center justify-center">
+            <svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+  <div class="p-4">
+    <h3 class={`text-white font-bold mb-2 ${featured ? 'text-xl' : 'text-base'}`}>{title}</h3>
+    <p class="text-zinc-400 text-sm line-clamp-2 mb-3">{excerpt}</p>
+    <div class="flex items-center gap-2 text-xs text-zinc-500">
+      {author && <span>{author}</span>}
+      {author && <span>·</span>}
+      <span>{formatDate(date)}</span>
+    </div>
+  </div>
+</a>
