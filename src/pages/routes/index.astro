@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RouteCard from '../../components/RouteCard.astro';
+import { getCollection } from 'astro:content';
+import { WHATSAPP_GROUP_URL } from '../../config';
+
+const routes = await getCollection('routes');
+
+const regions = ['All', ...new Set(routes.map(r => r.data.region))];
+const difficulties = ['All', ...new Set(routes.map(r => r.data.difficulty))];
+---
+
+<BaseLayout title="Routes" description="Curated motorcycle routes across Malaysia, tested by Motorfella riders.">
+
+  <section class="py-16 px-4 bg-zinc-950">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-3xl md:text-4xl font-black text-white mb-3">Explore Malaysian Roads</h1>
+      <p class="text-zinc-400 text-lg mb-10">Curated routes by Motorfella riders — tested, documented.</p>
+
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-4 mb-10" id="filters">
+        <select id="filter-region" class="bg-zinc-800 text-zinc-300 border border-zinc-700 rounded px-3 py-2 text-sm">
+          {regions.map(r => <option value={r}>{r === 'All' ? 'All Regions' : r}</option>)}
+        </select>
+        <select id="filter-difficulty" class="bg-zinc-800 text-zinc-300 border border-zinc-700 rounded px-3 py-2 text-sm">
+          {difficulties.map(d => <option value={d}>{d === 'All' ? 'All Difficulties' : d}</option>)}
+        </select>
+      </div>
+
+      <!-- Route Cards -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="routes-grid">
+        {routes.map(route => (
+          <div
+            class="route-card"
+            data-region={route.data.region}
+            data-difficulty={route.data.difficulty}
+          >
+            <RouteCard
+              title={route.data.title}
+              distance_km={route.data.distance_km}
+              duration_days={route.data.duration_days}
+              difficulty={route.data.difficulty}
+              hero_image={route.data.hero_image}
+              slug={route.id}
+            />
+          </div>
+        ))}
+      </div>
+
+      <!-- Submit CTA -->
+      <div class="mt-16 pt-12 border-t border-zinc-800 text-center">
+        <p class="text-zinc-400 mb-4">Know a great route?</p>
+        <a
+          href={WHATSAPP_GROUP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block border border-zinc-600 text-zinc-300 font-medium px-6 py-3 rounded hover:border-white hover:text-white transition-colors"
+        >
+          Share It via WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  const regionSelect = document.getElementById('filter-region') as HTMLSelectElement;
+  const difficultySelect = document.getElementById('filter-difficulty') as HTMLSelectElement;
+  const cards = document.querySelectorAll<HTMLElement>('.route-card');
+
+  function applyFilters() {
+    const region = regionSelect.value;
+    const difficulty = difficultySelect.value;
+
+    cards.forEach(card => {
+      const matchRegion = region === 'All' || card.dataset.region === region;
+      const matchDifficulty = difficulty === 'All' || card.dataset.difficulty === difficulty;
+      card.style.display = matchRegion && matchDifficulty ? '' : 'none';
+    });
+  }
+
+  regionSelect.addEventListener('change', applyFilters);
+  difficultySelect.addEventListener('change', applyFilters);
+</script>
