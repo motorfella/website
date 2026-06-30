@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { WHATSAPP_GROUP_URL } from '../config';
+
+const benefits = [
+  {
+    icon: 'MAP',
+    title: 'Organised Rides',
+    desc: 'Monthly group trips, curated routes, proper briefings, and sweep riders. You focus on the ride.',
+  },
+  {
+    icon: 'CREW',
+    title: 'Real Community',
+    desc: 'Riders who actually look out for each other on the road. Not just a chat group.',
+  },
+  {
+    icon: 'PIN',
+    title: 'Route Intel',
+    desc: 'Tested routes, local tips, fuel stop intel, and road condition updates from our riders.',
+  },
+  {
+    icon: 'FILM',
+    title: 'Stories & Videos',
+    desc: 'Ride recaps, expedition films, and stories from members. Live through every journey.',
+  },
+];
+
+const testimonials = [
+  {
+    quote: 'Best decision I made as a rider. These guys are the real deal.',
+    name: 'REPLACE WITH REAL MEMBER NAME',
+    location: 'Kuala Lumpur',
+  },
+  {
+    quote: "First group I've ridden with where safety is actually taken seriously. No ego, just brotherhood.",
+    name: 'REPLACE WITH REAL MEMBER NAME',
+    location: 'Selangor',
+  },
+];
+
+const steps = [
+  'Tap the button below.',
+  'Introduce yourself in the group.',
+  'Join the next ride.',
+];
+---
+
+<BaseLayout title="Join Us" description="Join the Motorfella WhatsApp community - ride with Malaysian motorcyclists.">
+  <section class="relative py-24 px-4 text-center">
+    <div class="absolute inset-0 bg-zinc-950">
+      <img src="/images/hero-join.jpg" alt="Group ride" class="w-full h-full object-cover opacity-30" />
+    </div>
+    <div class="relative z-10 max-w-2xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-black text-white mb-4">Ride With Us.</h1>
+      <p class="text-zinc-300 text-xl leading-relaxed">
+        This isn't just a group.<br />It's brotherhood on wheels.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-16 px-4 bg-zinc-950">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold text-white mb-10 text-center">What You Get</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        {benefits.map((benefit) => (
+          <div class="bg-zinc-900 rounded p-6">
+            <div class="inline-flex items-center justify-center min-w-12 h-10 px-3 rounded bg-zinc-800 text-zinc-300 text-xs font-black tracking-widest mb-4">
+              {benefit.icon}
+            </div>
+            <h3 class="text-white font-bold text-lg mb-2">{benefit.title}</h3>
+            <p class="text-zinc-400">{benefit.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 px-4 bg-zinc-900">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="text-2xl font-bold text-white mb-10">How to Join</h2>
+      <div class="space-y-4 mb-4">
+        {steps.map((step, i) => (
+          <div class="flex items-center gap-4 text-left">
+            <div class="w-10 h-10 rounded-full bg-white text-zinc-950 font-black flex items-center justify-center flex-shrink-0">
+              {i + 1}
+            </div>
+            <p class="text-zinc-300 text-lg">{step}</p>
+          </div>
+        ))}
+      </div>
+      <p class="text-zinc-500 text-lg mt-6">That's it.</p>
+    </div>
+  </section>
+
+  <section class="py-16 px-4 bg-zinc-950">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-white mb-10 text-center">What Members Say</h2>
+      <div class="space-y-6">
+        {testimonials.map((testimonial) => (
+          <div class="bg-zinc-900 rounded p-6">
+            <p class="text-zinc-300 text-lg italic mb-4">"{testimonial.quote}"</p>
+            <p class="text-zinc-500 text-sm">
+              - {testimonial.name}, {testimonial.location}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 px-4 bg-zinc-900 text-center">
+    <a
+      href={WHATSAPP_GROUP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-block bg-white text-zinc-950 font-black px-12 py-5 rounded text-xl hover:bg-zinc-100 transition-colors"
+    >
+      Join WhatsApp Group
+    </a>
+  </section>
+</BaseLayout>
