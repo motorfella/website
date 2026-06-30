@@ -93,5 +93,6 @@ const currentPath = Astro.url.pathname;
     menu?.classList.toggle('hidden', isOpen);
     iconOpen?.classList.toggle('hidden', !isOpen);
     iconClose?.classList.toggle('hidden', isOpen);
+    toggle?.setAttribute('aria-label', isOpen ? 'Open menu' : 'Close menu');
   });
 </script>
