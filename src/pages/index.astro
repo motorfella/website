@@ -1,9 +1,190 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import JoinBanner from '../components/JoinBanner.astro';
+import EventCard from '../components/EventCard.astro';
+import RouteCard from '../components/RouteCard.astro';
+import StoryCard from '../components/StoryCard.astro';
+import { getCollection } from 'astro:content';
+import { WHATSAPP_GROUP_URL } from '../config';
+
+const allEvents = await getCollection('events');
+const upcoming = allEvents
+  .filter(e => e.data.status === 'upcoming')
+  .sort((a, b) => a.data.date.localeCompare(b.data.date))
+  .slice(0, 2);
+
+const allRoutes = await getCollection('routes');
+const featuredRoutes = allRoutes.slice(0, 2);
+
+const allStories = await getCollection('stories');
+const featuredStories = allStories
+  .sort((a, b) => b.data.date.localeCompare(a.data.date))
+  .slice(0, 3);
+
+const galleryImages = [
+  '/images/gallery/01.jpg',
+  '/images/gallery/02.jpg',
+  '/images/gallery/03.jpg',
+  '/images/gallery/04.jpg',
+  '/images/gallery/05.jpg',
+  '/images/gallery/06.jpg',
+];
 ---
 
 <BaseLayout title="Motorfella">
-  <div class="min-h-screen flex items-center justify-center text-white">
-    <p>Layout working.</p>
-  </div>
+
+  <!-- HERO -->
+  <section class="relative min-h-screen flex items-center justify-center text-center px-4">
+    <div class="absolute inset-0 bg-zinc-950">
+      <img
+        src="/images/hero-home.jpg"
+        alt="Motorfella riders"
+        class="w-full h-full object-cover opacity-40"
+      />
+    </div>
+    <div class="relative z-10 max-w-3xl mx-auto">
+      <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight mb-4 leading-tight">
+        First Gear to<br/>Endless Adventure
+      </h1>
+      <p class="text-zinc-300 text-lg md:text-xl mb-10">
+        Real Rides. Real Brotherhood. Real Stories.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={WHATSAPP_GROUP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="bg-white text-zinc-950 font-bold px-8 py-4 rounded text-lg hover:bg-zinc-100 transition-colors"
+        >
+          Join the Ride →
+        </a>
+        <a
+          href="/routes"
+          class="border border-zinc-500 text-white font-medium px-8 py-4 rounded text-lg hover:border-white transition-colors"
+        >
+          Explore Routes
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO WE ARE -->
+  <section class="py-16 px-4 bg-zinc-950">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Who We Are</h2>
+      <p class="text-zinc-400 text-lg leading-relaxed">
+        Motorfella is a Malaysian motorcycle community built on courage, discipline, and brotherhood.
+        We ride with purpose — prioritising safety, respecting the road, and looking out for one another.
+      </p>
+      <a href="/about" class="inline-block mt-6 text-white font-medium hover:text-zinc-300 transition-colors">
+        Read Our Story →
+      </a>
+    </div>
+  </section>
+
+  <!-- UPCOMING EVENTS -->
+  <section class="py-16 px-4 bg-zinc-900">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-8">Upcoming Rides & Events</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        {upcoming.map(event => (
+          <EventCard
+            title={event.data.title}
+            date={event.data.date}
+            end_date={event.data.end_date}
+            location={event.data.location}
+            meeting_point={event.data.meeting_point}
+            departure_time={event.data.departure_time}
+            distance_km={event.data.distance_km}
+            status={event.data.status}
+            hero_image={event.data.hero_image}
+            slug={event.slug}
+            whatsapp_link={event.data.whatsapp_link}
+          />
+        ))}
+      </div>
+      <div class="mt-8 text-center">
+        <a href="/events" class="text-white font-medium hover:text-zinc-300 transition-colors">
+          See All Events →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED ROUTES -->
+  <section class="py-16 px-4 bg-zinc-950">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-8">Featured Routes</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        {featuredRoutes.map(route => (
+          <RouteCard
+            title={route.data.title}
+            distance_km={route.data.distance_km}
+            duration_days={route.data.duration_days}
+            difficulty={route.data.difficulty}
+            hero_image={route.data.hero_image}
+            slug={route.slug}
+          />
+        ))}
+      </div>
+      <div class="mt-8 text-center">
+        <a href="/routes" class="text-white font-medium hover:text-zinc-300 transition-colors">
+          Explore All Routes →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORIES & VIDEOS -->
+  <section class="py-16 px-4 bg-zinc-900">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-8">Latest Stories & Videos</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        {featuredStories.map(story => (
+          <StoryCard
+            title={story.data.title}
+            author={story.data.author}
+            date={story.data.date}
+            type={story.data.type}
+            excerpt={story.data.excerpt}
+            hero_image={story.data.hero_image}
+            slug={story.slug}
+            youtube_url={story.data.youtube_url}
+          />
+        ))}
+      </div>
+      <div class="mt-8 text-center">
+        <a href="/stories" class="text-white font-medium hover:text-zinc-300 transition-colors">
+          All Stories →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY PREVIEW -->
+  <section class="py-16 px-4 bg-zinc-950">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-8">Gallery</h2>
+      <div class="grid grid-cols-3 gap-2 md:gap-4">
+        {galleryImages.map((src, i) => (
+          <div class="aspect-square bg-zinc-800 overflow-hidden rounded">
+            <img
+              src={src}
+              alt={`Gallery image ${i + 1}`}
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+            />
+          </div>
+        ))}
+      </div>
+      <div class="mt-8 text-center">
+        <a href="/gallery" class="text-white font-medium hover:text-zinc-300 transition-colors">
+          View Full Gallery →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <JoinBanner />
+
 </BaseLayout>
