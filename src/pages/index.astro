@@ -6,6 +6,7 @@ import RouteCard from '../components/RouteCard.astro';
 import StoryCard from '../components/StoryCard.astro';
 import { getCollection } from 'astro:content';
 import { WHATSAPP_GROUP_URL } from '../config';
+import gallery from '../data/gallery.json';
 
 const allEvents = await getCollection('events');
 const upcoming = allEvents
@@ -21,14 +22,7 @@ const featuredStories = allStories
   .sort((a, b) => b.data.date.localeCompare(a.data.date))
   .slice(0, 3);
 
-const galleryImages = [
-  '/images/gallery/01.jpg',
-  '/images/gallery/02.jpg',
-  '/images/gallery/03.jpg',
-  '/images/gallery/04.jpg',
-  '/images/gallery/05.jpg',
-  '/images/gallery/06.jpg',
-];
+const galleryImages = gallery.images.slice(0, 6);
 ---
 
 <BaseLayout title="Motorfella">
@@ -166,11 +160,11 @@ const galleryImages = [
     <div class="max-w-7xl mx-auto">
       <h2 class="text-2xl md:text-3xl font-bold text-white mb-8">Gallery</h2>
       <div class="grid grid-cols-3 gap-2 md:gap-4">
-        {galleryImages.map((src, i) => (
+        {galleryImages.map((image, i) => (
           <div class="aspect-square bg-zinc-800 overflow-hidden rounded">
             <img
-              src={src}
-              alt={`Gallery image ${i + 1}`}
+              src={image.src}
+              alt={image.alt || `Gallery image ${i + 1}`}
               class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
               loading="lazy"
             />

@@ -1,13 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { FORMSPREE_ENDPOINT, WHATSAPP_GROUP_URL } from '../config';
+import { FORMSPREE_ENDPOINT, SOCIAL_LINKS, WHATSAPP_GROUP_URL } from '../config';
 
-const socialLinks = [
-  { label: 'Facebook', href: 'https://facebook.com/motorfella', handle: '/motorfella' },
-  { label: 'Instagram', href: 'https://instagram.com/motorfella', handle: '@motorfella' },
-  { label: 'TikTok', href: 'https://tiktok.com/@motorfella', handle: '@motorfella' },
-  { label: 'YouTube', href: 'https://youtube.com/@motorfella', handle: 'Motorfella' },
-];
+const socialLinks = SOCIAL_LINKS;
 ---
 
 <BaseLayout title="Contact" description="Get in touch with Motorfella - questions, collaborations, or press.">

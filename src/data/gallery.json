@@ -1,0 +1,40 @@
+{
+  "title": "Gallery",
+  "description": "Motorfella photo gallery - real rides, real moments.",
+  "intro": "Real rides. Real moments.",
+  "share_cta_text": "Share your ride photos with the community.",
+  "share_cta_label": "Send to WhatsApp Group",
+  "categories": ["all", "rides", "events", "routes", "people"],
+  "images": [
+    {
+      "src": "/images/gallery/01.jpg",
+      "alt": "Ride photo 1",
+      "category": "rides"
+    },
+    {
+      "src": "/images/gallery/02.jpg",
+      "alt": "Event photo 1",
+      "category": "events"
+    },
+    {
+      "src": "/images/gallery/03.jpg",
+      "alt": "Route photo 1",
+      "category": "routes"
+    },
+    {
+      "src": "/images/gallery/04.jpg",
+      "alt": "Riders 1",
+      "category": "people"
+    },
+    {
+      "src": "/images/gallery/05.jpg",
+      "alt": "Ride photo 2",
+      "category": "rides"
+    },
+    {
+      "src": "/images/gallery/06.jpg",
+      "alt": "Event photo 2",
+      "category": "events"
+    }
+  ]
+}

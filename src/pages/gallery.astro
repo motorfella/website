@@ -1,25 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { WHATSAPP_GROUP_URL } from '../config';
+import gallery from '../data/gallery.json';
 
-// Replace these placeholders with real gallery photography as assets are supplied.
-const images = [
-  { src: '/images/gallery/01.jpg', alt: 'Ride photo 1', category: 'rides' },
-  { src: '/images/gallery/02.jpg', alt: 'Event photo 1', category: 'events' },
-  { src: '/images/gallery/03.jpg', alt: 'Route photo 1', category: 'routes' },
-  { src: '/images/gallery/04.jpg', alt: 'Riders 1', category: 'people' },
-  { src: '/images/gallery/05.jpg', alt: 'Ride photo 2', category: 'rides' },
-  { src: '/images/gallery/06.jpg', alt: 'Event photo 2', category: 'events' },
-];
-
-const categories = ['all', 'rides', 'events', 'routes', 'people'];
+const images = gallery.images;
+const categories = gallery.categories;
 ---
 
-<BaseLayout title="Gallery" description="Motorfella photo gallery - real rides, real moments.">
+<BaseLayout title={gallery.title} description={gallery.description}>
   <section class="py-16 px-4 bg-zinc-950">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-3xl md:text-4xl font-black text-white mb-3">Gallery</h1>
-      <p class="text-zinc-400 text-lg mb-10">Real rides. Real moments.</p>
+      <h1 class="text-3xl md:text-4xl font-black text-white mb-3">{gallery.title}</h1>
+      <p class="text-zinc-400 text-lg mb-10">{gallery.intro}</p>
 
       <div class="flex flex-wrap gap-3 mb-10" id="category-filters">
         {categories.map((cat) => (
@@ -49,14 +41,14 @@ const categories = ['all', 'rides', 'events', 'routes', 'people'];
       </div>
 
       <div class="mt-16 pt-12 border-t border-zinc-800 text-center">
-        <p class="text-zinc-400 mb-4">Share your ride photos with the community.</p>
+        <p class="text-zinc-400 mb-4">{gallery.share_cta_text}</p>
         <a
           href={WHATSAPP_GROUP_URL}
           target="_blank"
           rel="noopener noreferrer"
           class="inline-block border border-zinc-600 text-zinc-300 font-medium px-6 py-3 rounded hover:border-white hover:text-white transition-colors"
         >
-          Send to WhatsApp Group
+          {gallery.share_cta_label}
         </a>
       </div>
     </div>
