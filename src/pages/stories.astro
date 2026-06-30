@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StoryCard from '../components/StoryCard.astro';
+import { getCollection } from 'astro:content';
+import { WHATSAPP_GROUP_URL } from '../config';
+
+const allStories = await getCollection('stories');
+const textStories = allStories
+  .filter(s => s.data.type === 'story')
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+const videos = allStories
+  .filter(s => s.data.type === 'video')
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+const featured = textStories.find(s => s.data.featured) ?? textStories[0];
+const restStories = textStories.filter(s => s.id !== featured?.id);
+---
+
+<BaseLayout title="Stories & Videos" description="Ride stories, expedition films, and route recaps from Motorfella.">
+
+  <section class="py-16 px-4 bg-zinc-950">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-3xl md:text-4xl font-black text-white mb-3">Stories & Videos</h1>
+      <p class="text-zinc-400 text-lg mb-10">From the road. By our riders.</p>
+
+      <!-- Tabs -->
+      <div class="flex gap-0 mb-10 border-b border-zinc-800">
+        <button
+          id="tab-stories"
+          class="tab-btn px-6 py-3 text-sm font-medium text-white border-b-2 border-white transition-colors"
+          data-tab="stories"
+        >
+          Stories
+        </button>
+        <button
+          id="tab-videos"
+          class="tab-btn px-6 py-3 text-sm font-medium text-zinc-500 border-b-2 border-transparent hover:text-zinc-300 transition-colors"
+          data-tab="videos"
+        >
+          Videos
+        </button>
+      </div>
+
+      <!-- Stories Panel -->
+      <div id="panel-stories">
+        {featured && (
+          <div class="mb-10">
+            <StoryCard
+              title={featured.data.title}
+              author={featured.data.author}
+              date={featured.data.date}
+              type={featured.data.type}
+              excerpt={featured.data.excerpt}
+              hero_image={featured.data.hero_image}
+              slug={featured.id}
+              featured={true}
+            />
+          </div>
+        )}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {restStories.map(story => (
+            <StoryCard
+              title={story.data.title}
+              author={story.data.author}
+              date={story.data.date}
+              type={story.data.type}
+              excerpt={story.data.excerpt}
+              hero_image={story.data.hero_image}
+              slug={story.id}
+            />
+          ))}
+        </div>
+      </div>
+
+      <!-- Videos Panel -->
+      <div id="panel-videos" class="hidden">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {videos.map(video => (
+            <StoryCard
+              title={video.data.title}
+              author={video.data.author}
+              date={video.data.date}
+              type={video.data.type}
+              excerpt={video.data.excerpt}
+              hero_image={video.data.hero_image}
+              slug={video.id}
+              youtube_url={video.data.youtube_url}
+            />
+          ))}
+        </div>
+      </div>
+
+      <!-- Share CTA -->
+      <div class="mt-16 pt-12 border-t border-zinc-800 text-center">
+        <p class="text-zinc-400 mb-4">Have a story to share?</p>
+        <a
+          href={WHATSAPP_GROUP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block border border-zinc-600 text-zinc-300 font-medium px-6 py-3 rounded hover:border-white hover:text-white transition-colors"
+        >
+          Share via WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
+  const panels: Record<string, HTMLElement | null> = {
+    stories: document.getElementById('panel-stories'),
+    videos: document.getElementById('panel-videos'),
+  };
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.tab!;
+
+      tabs.forEach(t => {
+        t.classList.toggle('text-white', t.dataset.tab === target);
+        t.classList.toggle('border-white', t.dataset.tab === target);
+        t.classList.toggle('text-zinc-500', t.dataset.tab !== target);
+        t.classList.toggle('border-transparent', t.dataset.tab !== target);
+      });
+
+      Object.entries(panels).forEach(([key, panel]) => {
+        panel?.classList.toggle('hidden', key !== target);
+      });
+    });
+  });
+</script>

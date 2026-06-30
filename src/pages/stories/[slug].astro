@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import JoinBanner from '../../components/JoinBanner.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const stories = await getCollection('stories', s => s.data.type === 'story');
+  return stories.map(story => ({ params: { slug: story.id } }));
+}
+
+const { slug } = Astro.params;
+const story = await getEntry('stories', slug!);
+
+if (!story || story.data.type === 'video') return Astro.redirect('/stories');
+
+const { Content } = await render(story);
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('en-MY', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  });
+}
+---
+
+<BaseLayout title={story.data.title} description={story.data.excerpt}>
+
+  <article class="bg-zinc-950 py-16 px-4">
+    <div class="max-w-3xl mx-auto">
+      <a href="/stories" class="text-zinc-500 hover:text-white text-sm transition-colors">← Back to Stories</a>
+
+      <div class="mt-8 mb-6">
+        <div class="aspect-video rounded overflow-hidden bg-zinc-800 mb-6">
+          <img src={story.data.hero_image} alt={story.data.title} class="w-full h-full object-cover" />
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black text-white mb-4">{story.data.title}</h1>
+        <div class="flex gap-3 text-sm text-zinc-500">
+          {story.data.author && <span>{story.data.author}</span>}
+          {story.data.author && <span>·</span>}
+          <span>{formatDate(story.data.date)}</span>
+        </div>
+      </div>
+
+      <div class="prose prose-invert prose-zinc max-w-none text-lg">
+        <Content />
+      </div>
+    </div>
+  </article>
+
+  <JoinBanner />
+
+</BaseLayout>
