@@ -1,0 +1,61 @@
+---
+import { SITE_NAME } from '../config';
+
+const footerLinks = [
+  { href: '/routes', label: 'Routes' },
+  { href: '/events', label: 'Events' },
+  { href: '/stories', label: 'Stories' },
+  { href: '/gallery', label: 'Gallery' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+
+const socialLinks = [
+  { href: 'https://facebook.com/motorfella', label: 'Facebook', abbr: 'FB' },
+  { href: 'https://instagram.com/motorfella', label: 'Instagram', abbr: 'IG' },
+  { href: 'https://tiktok.com/@motorfella', label: 'TikTok', abbr: 'TT' },
+  { href: 'https://youtube.com/@motorfella', label: 'YouTube', abbr: 'YT' },
+];
+---
+
+<footer class="bg-zinc-950 border-t border-zinc-800 py-12 px-4">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
+
+      <!-- Brand -->
+      <div>
+        <p class="text-xl font-bold tracking-widest text-white uppercase mb-1">{SITE_NAME}</p>
+        <p class="text-zinc-500 text-sm">Kuala Lumpur, Malaysia</p>
+      </div>
+
+      <!-- Nav Links -->
+      <div class="flex flex-wrap gap-x-6 gap-y-2">
+        {footerLinks.map(link => (
+          <a href={link.href} class="text-zinc-400 hover:text-white text-sm transition-colors">
+            {link.label}
+          </a>
+        ))}
+      </div>
+
+      <!-- Social -->
+      <div class="flex gap-4">
+        {socialLinks.map(s => (
+          <a
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={s.label}
+            class="text-zinc-500 hover:text-white text-sm font-medium transition-colors"
+          >
+            [{s.abbr}]
+          </a>
+        ))}
+      </div>
+
+    </div>
+
+    <div class="mt-8 pt-8 border-t border-zinc-800">
+      <p class="text-zinc-600 text-sm">© {new Date().getFullYear()} {SITE_NAME}</p>
+    </div>
+  </div>
+</footer>
