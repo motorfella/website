@@ -13,6 +13,12 @@ const routes = defineCollection({
     hero_image: z.string().default('/images/routes/placeholder.jpg'),
     key_stops: z.array(z.string()).default([]),
     tips: z.array(z.string()).default([]),
+    checkpoints: z.array(z.object({
+      name: z.string(),
+      lat: z.number(),
+      lng: z.number(),
+      note: z.string().optional(),
+    })).default([]),
   }),
 });
 

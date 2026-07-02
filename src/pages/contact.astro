@@ -6,84 +6,92 @@ const socialLinks = SOCIAL_LINKS;
 ---
 
 <BaseLayout title="Contact" description="Get in touch with Motorfella - questions, collaborations, or press.">
-  <section class="py-16 px-4 bg-zinc-950">
+  <section class="py-20 px-6 bg-[#09090B]">
     <div class="max-w-2xl mx-auto">
-      <h1 class="text-3xl md:text-4xl font-black text-white mb-3">Get In Touch</h1>
-      <p class="text-zinc-400 text-lg mb-12">Questions, collabs, press, or just want to say hi.</p>
 
+      <!-- Header -->
+      <div class="mb-14 border-l-2 border-l-red-600 pl-6">
+        <p class="section-label mb-3">Reach Out</p>
+        <h1 class="font-syncopate font-bold text-4xl md:text-5xl text-white leading-none tracking-tight">
+          GET IN<br/>TOUCH
+        </h1>
+        <p class="text-zinc-500 mt-4 text-sm">Questions, collabs, press, or just want to say hi.</p>
+      </div>
+
+      <!-- Form -->
       <form action={FORMSPREE_ENDPOINT} method="POST" class="space-y-6 mb-16">
         <div>
-          <label for="name" class="block text-zinc-300 text-sm font-medium mb-2">Name</label>
+          <label for="name" class="block text-[11px] font-bold tracking-[0.2em] uppercase font-syncopate text-zinc-500 mb-3">Name</label>
           <input
             type="text"
             id="name"
             name="name"
             required
-            class="w-full bg-zinc-900 border border-zinc-700 rounded px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 transition-colors"
+            autocomplete="name"
+            class="w-full bg-[#111113] border border-zinc-800 px-4 py-3.5 text-white placeholder-zinc-700 focus:outline-none focus:border-red-600 transition-colors duration-200 text-sm"
             placeholder="Your name"
           />
         </div>
 
         <div>
-          <label for="email" class="block text-zinc-300 text-sm font-medium mb-2">Email</label>
+          <label for="email" class="block text-[11px] font-bold tracking-[0.2em] uppercase font-syncopate text-zinc-500 mb-3">Email</label>
           <input
             type="email"
             id="email"
             name="email"
             required
-            class="w-full bg-zinc-900 border border-zinc-700 rounded px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 transition-colors"
+            autocomplete="email"
+            class="w-full bg-[#111113] border border-zinc-800 px-4 py-3.5 text-white placeholder-zinc-700 focus:outline-none focus:border-red-600 transition-colors duration-200 text-sm"
             placeholder="your@email.com"
           />
         </div>
 
         <div>
-          <label for="message" class="block text-zinc-300 text-sm font-medium mb-2">Message</label>
+          <label for="message" class="block text-[11px] font-bold tracking-[0.2em] uppercase font-syncopate text-zinc-500 mb-3">Message</label>
           <textarea
             id="message"
             name="message"
             required
             rows="5"
-            class="w-full bg-zinc-900 border border-zinc-700 rounded px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 transition-colors resize-none"
+            class="w-full bg-[#111113] border border-zinc-800 px-4 py-3.5 text-white placeholder-zinc-700 focus:outline-none focus:border-red-600 transition-colors duration-200 resize-none text-sm"
             placeholder="What's on your mind?"
           ></textarea>
         </div>
 
-        <button
-          type="submit"
-          class="w-full bg-white text-zinc-950 font-bold py-4 rounded hover:bg-zinc-100 transition-colors"
-        >
+        <button type="submit" class="btn-primary w-full justify-center text-sm">
           Send Message
         </button>
       </form>
 
-      <div class="mb-12 pt-12 border-t border-zinc-800">
-        <h2 class="text-lg font-bold text-white mb-6">Or Find Us On</h2>
+      <!-- Social Links -->
+      <div class="mb-12 pt-12 border-t border-zinc-900">
+        <p class="section-label mb-6">Find Us On</p>
         <div class="space-y-3">
           {socialLinks.map((social) => (
             <a
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
-              class="flex items-center gap-3 text-zinc-400 hover:text-white transition-colors"
+              class="flex items-center gap-4 group py-2"
             >
-              <span class="text-zinc-600 w-24 text-sm">{social.label}</span>
-              <span>{social.handle}</span>
+              <span class="font-syncopate text-[10px] tracking-[0.2em] uppercase text-zinc-400 w-20 group-hover:text-red-500 transition-colors duration-200">{social.label}</span>
+              <span class="text-zinc-400 group-hover:text-white transition-colors duration-200 text-sm">{social.handle}</span>
             </a>
           ))}
         </div>
       </div>
 
-      <div class="pt-8 border-t border-zinc-800 text-center">
-        <p class="text-zinc-500 mb-4 text-sm">For rides and community, join the group:</p>
-        <a
-          href={WHATSAPP_GROUP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-block border border-zinc-600 text-zinc-300 font-medium px-6 py-3 rounded hover:border-white hover:text-white transition-colors"
-        >
+      <!-- WhatsApp -->
+      <div class="pt-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <p class="section-label mb-1">For rides</p>
+          <p class="text-zinc-400 text-sm">Join the community group directly.</p>
+        </div>
+        <a href={WHATSAPP_GROUP_URL} target="_blank" rel="noopener noreferrer" class="btn-secondary whitespace-nowrap text-xs">
           Join WhatsApp Group
         </a>
       </div>
+
     </div>
   </section>
 </BaseLayout>

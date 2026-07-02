@@ -2,58 +2,88 @@
 import { SITE_LOCATION, SITE_LOGO, SITE_NAME, SOCIAL_LINKS } from '../config';
 
 const footerLinks = [
-  { href: '/routes', label: 'Routes' },
-  { href: '/events', label: 'Events' },
-  { href: '/stories', label: 'Stories' },
-  { href: '/gallery', label: 'Gallery' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/routes.html', label: 'Routes' },
+  { href: '/events.html', label: 'Events' },
+  { href: '/stories.html', label: 'Stories' },
+  { href: '/gallery.html', label: 'Gallery' },
+  { href: '/about.html', label: 'About' },
+  { href: '/contact.html', label: 'Contact' },
 ];
 
 const socialLinks = SOCIAL_LINKS;
 ---
 
-<footer class="bg-zinc-950 border-t border-zinc-800 py-12 px-4">
+<footer class="bg-[#09090B] border-t border-zinc-900 pt-16 pb-8 px-6">
   <div class="max-w-7xl mx-auto">
-    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
+
+    <!-- Top: Brand + Links + Social -->
+    <div class="grid md:grid-cols-3 gap-12 mb-16">
 
       <!-- Brand -->
       <div>
-        <div class="flex items-center gap-3 mb-1">
-          {SITE_LOGO ? <img src={SITE_LOGO} alt={`${SITE_NAME} logo`} class="h-9 w-auto" /> : null}
-          <p class="text-xl font-bold tracking-widest text-white uppercase">{SITE_NAME}</p>
+        <div class="flex items-center gap-2 mb-5">
+          {SITE_LOGO ? (
+            <img src={SITE_LOGO} alt={`${SITE_NAME} logo`} class="h-8 w-auto" />
+          ) : (
+            <>
+              <span class="w-1 h-6 bg-red-600 inline-block"></span>
+              <span class="font-syncopate font-bold text-lg tracking-[0.2em] text-white uppercase">
+                {SITE_NAME}
+              </span>
+            </>
+          )}
         </div>
-        <p class="text-zinc-500 text-sm">{SITE_LOCATION}</p>
+        <p class="text-zinc-400 text-xs tracking-wide uppercase mb-3">{SITE_LOCATION}</p>
+        <p class="text-zinc-500 text-sm leading-relaxed">
+          Malaysian motorcycle community built on courage, discipline, and brotherhood.
+        </p>
       </div>
 
       <!-- Nav Links -->
-      <div class="flex flex-wrap gap-x-6 gap-y-2">
-        {footerLinks.map(link => (
-          <a href={link.href} class="text-zinc-400 hover:text-white text-sm transition-colors">
-            {link.label}
-          </a>
-        ))}
+      <div>
+        <p class="section-label mb-5">Navigate</p>
+        <ul class="space-y-2.5">
+          {footerLinks.map(link => (
+            <li>
+              <a href={link.href} class="text-zinc-500 hover:text-white text-sm font-medium transition-colors duration-200">
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <!-- Social -->
-      <div class="flex gap-4">
-        {socialLinks.map(s => (
-          <a
-            href={s.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={s.label}
-            class="text-zinc-500 hover:text-white text-sm font-medium transition-colors"
-          >
-            [{s.abbr}]
-          </a>
-        ))}
+      <div>
+        <p class="section-label mb-5">Follow</p>
+        <div class="flex flex-wrap gap-2.5">
+          {socialLinks.map(s => (
+            <a
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={s.label}
+              class="border border-zinc-800 hover:border-red-600 text-zinc-500 hover:text-red-400 text-xs font-semibold tracking-wider uppercase px-3 py-2 transition-all duration-200"
+            >
+              {s.abbr}
+            </a>
+          ))}
+        </div>
       </div>
 
     </div>
 
-    <div class="mt-8 pt-8 border-t border-zinc-800">
-      <p class="text-zinc-600 text-sm">© {new Date().getFullYear()} {SITE_NAME}</p>
+    <!-- Bottom bar -->
+    <div class="pt-8 border-t border-zinc-900 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-zinc-500 text-xs tracking-wide">
+        © {new Date().getFullYear()} {SITE_NAME} — All rights reserved
+      </p>
+      <div class="flex items-center gap-2">
+        <span class="speed-line-sm opacity-30"></span>
+        <span class="text-zinc-500 text-[10px] tracking-widest font-syncopate uppercase">Ride Safe</span>
+        <span class="speed-line-sm opacity-30"></span>
+      </div>
     </div>
+
   </div>
 </footer>

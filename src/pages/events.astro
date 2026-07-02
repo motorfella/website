@@ -15,39 +15,57 @@ const past = allEvents
 
 <BaseLayout title="Events" description="Upcoming rides and events from Motorfella — join us on the road.">
 
-  <section class="py-16 px-4 bg-zinc-950">
+  <section class="py-20 px-6 bg-[#09090B]">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-3xl md:text-4xl font-black text-white mb-3">Rides & Events</h1>
-      <p class="text-zinc-400 text-lg mb-12">Where the road takes us next.</p>
+
+      <!-- Header -->
+      <div class="mb-16 border-l-2 border-l-red-600 pl-6">
+        <p class="section-label mb-3">On the Calendar</p>
+        <h1 class="font-syncopate font-bold text-4xl md:text-5xl text-white leading-none tracking-tight">
+          RIDES &<br/>EVENTS
+        </h1>
+        <p class="text-zinc-500 mt-4 text-sm tracking-wide">Where the road takes us next.</p>
+      </div>
 
       <!-- Upcoming -->
-      <h2 class="text-xl font-bold text-zinc-300 uppercase tracking-widest mb-6">Upcoming</h2>
-      {upcoming.length === 0 && (
-        <p class="text-zinc-500 mb-12">No upcoming events right now. Check back soon — or join the WhatsApp group to hear first.</p>
-      )}
-      <div class="grid md:grid-cols-2 gap-6 mb-16">
-        {upcoming.map(event => (
-          <EventCard
-            title={event.data.title}
-            date={event.data.date}
-            end_date={event.data.end_date}
-            location={event.data.location}
-            meeting_point={event.data.meeting_point}
-            departure_time={event.data.departure_time}
-            distance_km={event.data.distance_km}
-            status={event.data.status}
-            hero_image={event.data.hero_image}
-            slug={event.id}
-            whatsapp_link={event.data.whatsapp_link}
-          />
-        ))}
+      <div class="mb-20">
+        <div class="flex items-center gap-4 mb-8">
+          <p class="section-label">Upcoming</p>
+          <span class="speed-line flex-1 opacity-20"></span>
+        </div>
+        {upcoming.length === 0 ? (
+          <div class="card-dark p-8 text-center">
+            <p class="text-zinc-500 text-sm">No upcoming events right now. Check back soon — or join the WhatsApp group to hear first.</p>
+          </div>
+        ) : (
+          <div class="grid md:grid-cols-2 gap-6">
+            {upcoming.map(event => (
+              <EventCard
+                title={event.data.title}
+                date={event.data.date}
+                end_date={event.data.end_date}
+                location={event.data.location}
+                meeting_point={event.data.meeting_point}
+                departure_time={event.data.departure_time}
+                distance_km={event.data.distance_km}
+                status={event.data.status}
+                hero_image={event.data.hero_image}
+                slug={event.id}
+                whatsapp_link={event.data.whatsapp_link}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <!-- Past Rides -->
       {past.length > 0 && (
-        <>
-          <h2 class="text-xl font-bold text-zinc-500 uppercase tracking-widest mb-6">Past Rides</h2>
-          <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <div class="flex items-center gap-4 mb-8">
+            <p class="text-[11px] font-bold tracking-[0.3em] uppercase text-zinc-400 font-syncopate">Past Rides</p>
+            <span class="speed-line flex-1 opacity-10"></span>
+          </div>
+          <div class="grid md:grid-cols-2 gap-6 opacity-70">
             {past.map(event => (
               <EventCard
                 title={event.data.title}
@@ -64,11 +82,12 @@ const past = allEvents
               />
             ))}
           </div>
-        </>
+        </div>
       )}
+
     </div>
   </section>
 
-  <JoinBanner heading="Never miss a ride." />
+  <JoinBanner heading="NEVER MISS A RIDE." />
 
 </BaseLayout>

@@ -10,30 +10,52 @@ interface Props {
 
 const { title, distance_km, duration_days, difficulty, hero_image, slug } = Astro.props;
 
-const difficultyLabel: Record<string, string> = {
-  easy: '★☆☆☆☆ Easy',
-  moderate: '★★★☆☆ Moderate',
-  challenging: '★★★★☆ Challenging',
-  epic: '★★★★★ Epic',
+const difficultyConfig: Record<string, { label: string; color: string }> = {
+  easy:        { label: 'Easy',        color: 'text-emerald-400 bg-emerald-950/60 border-emerald-800' },
+  moderate:    { label: 'Moderate',    color: 'text-yellow-400 bg-yellow-950/60 border-yellow-800' },
+  challenging: { label: 'Challenging', color: 'text-orange-400 bg-orange-950/60 border-orange-800' },
+  epic:        { label: 'Epic',        color: 'text-red-400 bg-red-950/60 border-red-800' },
 };
+
+const diff = difficultyConfig[difficulty] ?? { label: difficulty, color: 'text-zinc-400 bg-zinc-800 border-zinc-700' };
 ---
 
-<a href={`/routes/${slug}`} class="block group bg-zinc-900 rounded overflow-hidden hover:bg-zinc-800 transition-colors">
-  <div class="aspect-video bg-zinc-800 overflow-hidden">
+<a href={`/routes/${slug}.html`} class="block group card-dark border-l-2 border-l-transparent hover:border-l-red-600 transition-all duration-300 cursor-pointer h-full">
+  <!-- Image -->
+  <div class="aspect-video bg-zinc-900 overflow-hidden relative">
     <img
       src={hero_image}
       alt={title}
-      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
       loading="lazy"
     />
-  </div>
-  <div class="p-4">
-    <h3 class="text-white font-bold text-lg mb-2">{title}</h3>
-    <div class="flex flex-wrap gap-3 text-sm text-zinc-400">
-      <span>{distance_km} KM</span>
-      <span>·</span>
-      <span>{duration_days} {duration_days === 1 ? 'Day' : 'Days'}</span>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#09090B]/70 to-transparent"></div>
+
+    <!-- Difficulty badge -->
+    <div class="absolute bottom-3 left-4">
+      <span class={`text-[9px] font-semibold tracking-widest uppercase px-2.5 py-1 border ${diff.color}`}>
+        {diff.label}
+      </span>
     </div>
-    <p class="text-zinc-500 text-sm mt-2">{difficultyLabel[difficulty] ?? difficulty}</p>
+  </div>
+
+  <!-- Content -->
+  <div class="p-4 md:p-5">
+    <h3 class="text-white font-bold text-lg mb-4 leading-snug group-hover:text-red-400 transition-colors duration-200">
+      {title}
+    </h3>
+
+    <!-- Stats -->
+    <div class="flex items-center gap-6 text-sm">
+      <div class="flex flex-col">
+        <span class="font-syncopate font-bold text-white text-lg leading-none">{distance_km}</span>
+        <span class="text-[10px] tracking-[0.2em] uppercase text-zinc-400 font-syncopate mt-0.5">KM</span>
+      </div>
+      <div class="w-px h-8 bg-zinc-800"></div>
+      <div class="flex flex-col">
+        <span class="font-syncopate font-bold text-white text-lg leading-none">{duration_days}</span>
+        <span class="text-[10px] tracking-[0.2em] uppercase text-zinc-400 font-syncopate mt-0.5">{duration_days === 1 ? 'Day' : 'Days'}</span>
+      </div>
+    </div>
   </div>
 </a>

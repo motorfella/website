@@ -25,7 +25,7 @@ const rsvpUrl = whatsapp_link ?? WHATSAPP_GROUP_URL;
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('en-MY', {
-    day: 'numeric', month: 'long', year: 'numeric',
+    day: 'numeric', month: 'short', year: 'numeric',
   });
 }
 
@@ -34,31 +34,71 @@ const dateDisplay = end_date
   : formatDate(date);
 ---
 
-<div class="bg-zinc-900 rounded overflow-hidden">
-  <div class="aspect-video bg-zinc-800 overflow-hidden">
-    <img src={hero_image} alt={title} class="w-full h-full object-cover" loading="lazy" />
-  </div>
-  <div class="p-5">
-    <p class="text-zinc-400 text-sm font-medium mb-1">{dateDisplay}</p>
-    <h3 class="text-white font-bold text-xl mb-4">{title}</h3>
-    <div class="space-y-1 text-sm text-zinc-400 mb-5">
-      <p>📍 {location}</p>
-      <p>🕐 Depart {departure_time} from {meeting_point}</p>
-      <p>🏍️ {distance_km} KM</p>
+<div class="card-dark border-l-2 border-l-red-600 group overflow-hidden h-full flex flex-col">
+  <!-- Image -->
+  <div class="aspect-video bg-zinc-900 overflow-hidden relative flex-shrink-0">
+    <img
+      src={hero_image}
+      alt={title}
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+      loading="lazy"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-[#09090B]/80 to-transparent"></div>
+
+    <!-- Status badge -->
+    <div class="absolute top-3 right-3">
+      {status === 'upcoming' ? (
+        <span class="bg-red-600 text-white text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1 font-syncopate">
+          UPCOMING
+        </span>
+      ) : (
+        <span class="bg-zinc-800/90 text-zinc-400 text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1 font-syncopate border border-zinc-700">
+          PAST
+        </span>
+      )}
     </div>
+  </div>
+
+  <!-- Content -->
+  <div class="p-5 md:p-6 flex flex-col flex-1">
+    <p class="text-red-500 text-xs font-semibold tracking-wider uppercase mb-2">{dateDisplay}</p>
+    <h3 class="text-white font-bold text-xl mb-5 leading-snug">{title}</h3>
+
+    <div class="space-y-2.5 text-sm text-zinc-400 mb-6 flex-1">
+      <div class="flex items-center gap-3">
+        <svg class="w-3.5 h-3.5 text-zinc-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <span>{location}</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg class="w-3.5 h-3.5 text-zinc-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span>Depart {departure_time} from {meeting_point}</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg class="w-3.5 h-3.5 text-zinc-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span><strong class="font-syncopate text-white text-sm">{distance_km}</strong> <span class="text-zinc-500 text-xs uppercase tracking-wide font-syncopate">km</span></span>
+      </div>
+    </div>
+
     {status === 'upcoming' ? (
       <a
         href={rsvpUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-block bg-white text-zinc-950 font-bold px-5 py-2.5 rounded text-sm hover:bg-zinc-100 transition-colors"
+        class="btn-primary text-xs self-start"
       >
         RSVP via WhatsApp
       </a>
     ) : recap_slug ? (
       <a
-        href={`/stories/${recap_slug}`}
-        class="inline-block border border-zinc-700 text-zinc-300 font-medium px-5 py-2.5 rounded text-sm hover:border-zinc-500 hover:text-white transition-colors"
+        href={`/stories/${recap_slug}.html`}
+        class="btn-secondary text-xs self-start"
       >
         View Recap
       </a>

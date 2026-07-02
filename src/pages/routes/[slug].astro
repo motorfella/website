@@ -10,75 +10,92 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 const route = await getEntry('routes', slug!);
-
-if (!route) return Astro.redirect('/routes');
+if (!route) return Astro.redirect('/routes.html');
 
 const { Content } = await render(route);
 
-const difficultyLabel: Record<string, string> = {
-  easy: '★☆☆☆☆ Easy',
-  moderate: '★★★☆☆ Moderate',
-  challenging: '★★★★☆ Challenging',
-  epic: '★★★★★ Epic',
+const difficultyConfig: Record<string, { label: string; color: string }> = {
+  easy:        { label: 'Easy',        color: 'text-emerald-400 border-emerald-800' },
+  moderate:    { label: 'Moderate',    color: 'text-yellow-400 border-yellow-800' },
+  challenging: { label: 'Challenging', color: 'text-orange-400 border-orange-800' },
+  epic:        { label: 'Epic',        color: 'text-red-400 border-red-800' },
 };
+const diff = difficultyConfig[route.data.difficulty] ?? { label: route.data.difficulty, color: 'text-zinc-400 border-zinc-700' };
+const hasMap = route.data.checkpoints && route.data.checkpoints.length >= 2;
+const checkpointsJson = JSON.stringify(route.data.checkpoints ?? []);
 ---
 
 <BaseLayout title={route.data.title} description={`${route.data.distance_km} KM · ${route.data.duration_days} day${route.data.duration_days > 1 ? 's' : ''} · ${route.data.region}`}>
 
+  {hasMap && (
+    <Fragment slot="head">
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    </Fragment>
+  )}
+
   <!-- Back -->
-  <div class="bg-zinc-950 px-4 pt-8">
+  <div class="bg-[#09090B] px-6 pt-8">
     <div class="max-w-4xl mx-auto">
-      <a href="/routes" class="text-zinc-500 hover:text-white text-sm transition-colors">← Back to Routes</a>
+      <a href="/routes.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-red-400 text-xs font-medium tracking-wider uppercase transition-colors duration-200">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        All Routes
+      </a>
     </div>
   </div>
 
   <!-- Hero Image -->
-  <div class="bg-zinc-950 px-4 pt-4">
+  <div class="bg-[#09090B] px-6 pt-6">
     <div class="max-w-4xl mx-auto">
-      <div class="aspect-video rounded overflow-hidden bg-zinc-800">
+      <div class="aspect-video bg-zinc-900 overflow-hidden">
         <img src={route.data.hero_image} alt={route.data.title} class="w-full h-full object-cover" />
       </div>
     </div>
   </div>
 
   <!-- Route Info -->
-  <section class="py-10 px-4 bg-zinc-950">
+  <section class="py-12 px-6 bg-[#09090B]">
     <div class="max-w-4xl mx-auto">
-      <h1 class="text-3xl md:text-4xl font-black text-white mb-6">{route.data.title}</h1>
+
+      <p class="section-label mb-4">Route</p>
+      <h1 class="font-syncopate font-bold text-3xl md:text-4xl text-white mb-8 leading-tight tracking-tight">
+        {route.data.title.toUpperCase()}
+      </h1>
 
       <!-- Stat Bar -->
-      <div class="flex flex-wrap gap-6 mb-10 pb-8 border-b border-zinc-800">
-        <div class="text-center">
-          <p class="text-2xl font-bold text-white">{route.data.distance_km} KM</p>
-          <p class="text-zinc-500 text-sm">Distance</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-900 mb-12 border border-zinc-900">
+        <div class="bg-[#09090B] p-5">
+          <p class="font-syncopate font-bold text-2xl text-white">{route.data.distance_km}</p>
+          <p class="text-[10px] tracking-[0.2em] uppercase text-zinc-400 font-syncopate mt-1">KM</p>
         </div>
-        <div class="text-center">
-          <p class="text-2xl font-bold text-white">{route.data.duration_days} {route.data.duration_days === 1 ? 'Day' : 'Days'}</p>
-          <p class="text-zinc-500 text-sm">Duration</p>
+        <div class="bg-[#09090B] p-5">
+          <p class="font-syncopate font-bold text-2xl text-white">{route.data.duration_days}</p>
+          <p class="text-[10px] tracking-[0.2em] uppercase text-zinc-400 font-syncopate mt-1">{route.data.duration_days === 1 ? 'Day' : 'Days'}</p>
         </div>
-        <div class="text-center">
-          <p class="text-lg font-bold text-white">{route.data.region}</p>
-          <p class="text-zinc-500 text-sm">Region</p>
+        <div class="bg-[#09090B] p-5">
+          <p class="font-syncopate font-bold text-base text-white">{route.data.region}</p>
+          <p class="text-[10px] tracking-[0.2em] uppercase text-zinc-400 font-syncopate mt-1">Region</p>
         </div>
-        <div class="text-center">
-          <p class="text-lg font-bold text-white">{difficultyLabel[route.data.difficulty]}</p>
-          <p class="text-zinc-500 text-sm">Difficulty</p>
+        <div class="bg-[#09090B] p-5">
+          <p class={`font-syncopate font-bold text-sm border inline-block px-2 py-1 ${diff.color}`}>{diff.label}</p>
+          <p class="text-[10px] tracking-[0.2em] uppercase text-zinc-600 font-syncopate mt-2">Difficulty</p>
         </div>
       </div>
 
-      <!-- Overview Content -->
-      <div class="prose prose-invert prose-zinc max-w-none mb-10">
+      <!-- Content -->
+      <div class="prose prose-invert prose-zinc max-w-none mb-12 prose-p:text-zinc-400 prose-headings:font-syncopate prose-headings:tracking-tight prose-headings:uppercase">
         <Content />
       </div>
 
       <!-- Key Stops -->
       {route.data.key_stops.length > 0 && (
-        <div class="mb-10">
-          <h2 class="text-xl font-bold text-white mb-4">Key Stops</h2>
-          <ul class="space-y-2">
+        <div class="mb-12">
+          <p class="section-label mb-4">Key Stops</p>
+          <ul class="space-y-3">
             {route.data.key_stops.map(stop => (
-              <li class="flex gap-2 text-zinc-300">
-                <span class="text-zinc-600">•</span>
+              <li class="flex gap-3 text-zinc-400 text-sm">
+                <span class="text-red-600 mt-0.5 flex-shrink-0">—</span>
                 {stop}
               </li>
             ))}
@@ -86,22 +103,34 @@ const difficultyLabel: Record<string, string> = {
         </div>
       )}
 
-      <!-- Map Placeholder -->
-      <div class="mb-10">
-        <h2 class="text-xl font-bold text-white mb-4">Map</h2>
-        <div class="aspect-video bg-zinc-800 rounded flex items-center justify-center">
-          <p class="text-zinc-600 text-sm">Map embed or image — add per route</p>
-        </div>
+      <!-- Map -->
+      <div class="mb-12">
+        <p class="section-label mb-4">Route Map</p>
+        {hasMap ? (
+          <div class="relative border border-zinc-900 overflow-hidden" style="border-radius:0">
+            <div
+              id="route-map"
+              data-checkpoints={checkpointsJson}
+              style="height:420px;width:100%;background:#111113;"
+            ></div>
+            <!-- Checkpoint legend -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#09090B]/90 to-transparent pointer-events-none" style="height:60px"></div>
+          </div>
+        ) : (
+          <div class="aspect-video bg-[#111113] border border-zinc-900 flex items-center justify-center">
+            <p class="text-zinc-500 text-xs font-syncopate tracking-widest uppercase">No checkpoints added yet</p>
+          </div>
+        )}
       </div>
 
       <!-- Rider Tips -->
       {route.data.tips.length > 0 && (
-        <div class="mb-10">
-          <h2 class="text-xl font-bold text-white mb-4">Tips From Our Riders</h2>
+        <div class="mb-12">
+          <p class="section-label mb-4">Tips From Our Riders</p>
           <div class="space-y-3">
             {route.data.tips.map(tip => (
-              <div class="bg-zinc-900 border-l-4 border-zinc-600 px-4 py-3">
-                <p class="text-zinc-300 italic">"{tip}"</p>
+              <div class="border-l-2 border-l-red-600 pl-4 py-2">
+                <p class="text-zinc-400 italic text-sm leading-relaxed">"{tip}"</p>
               </div>
             ))}
           </div>
@@ -114,3 +143,172 @@ const difficultyLabel: Record<string, string> = {
   <JoinBanner />
 
 </BaseLayout>
+
+{hasMap && (
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+)}
+
+<script>
+  const mapEl = document.getElementById('route-map') as HTMLElement | null;
+  if (!mapEl) throw new Error('no map element');
+
+  const raw = mapEl.dataset.checkpoints;
+  if (!raw) throw new Error('no checkpoints data');
+
+  const checkpoints: Array<{ name: string; lat: number; lng: number; note?: string }> = JSON.parse(raw);
+  if (checkpoints.length < 2) throw new Error('need 2+ checkpoints');
+
+  async function fetchRoadPath(pts: Array<{lat: number; lng: number}>): Promise<[number, number][]> {
+    const coords = pts.map(c => `${c.lng},${c.lat}`).join(';');
+    const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`);
+    const data = await res.json();
+    if (data.code !== 'Ok') throw new Error(data.message);
+    return data.routes[0].geometry.coordinates.map(([lng, lat]: [number, number]) => [lat, lng] as [number, number]);
+  }
+
+  function interpolatePath(latlngs: [number, number][], steps = 500): [number, number][] {
+    const segCount = latlngs.length - 1;
+    const stepsPerSeg = Math.floor(steps / segCount);
+    const path: [number, number][] = [];
+    for (let s = 0; s < segCount; s++) {
+      const [lat1, lng1] = latlngs[s];
+      const [lat2, lng2] = latlngs[s + 1];
+      for (let t = 0; t < stepsPerSeg; t++) {
+        const frac = t / stepsPerSeg;
+        path.push([lat1 + (lat2 - lat1) * frac, lng1 + (lng2 - lng1) * frac]);
+      }
+    }
+    path.push(latlngs[latlngs.length - 1]);
+    return path;
+  }
+
+  // Wait for Leaflet to load (it's loaded via external script tag)
+  async function initMap() {
+    if (typeof (window as any).L === 'undefined') {
+      setTimeout(initMap, 50);
+      return;
+    }
+    const L = (window as any).L;
+
+    const map = L.map('route-map', {
+      zoomControl: true,
+      scrollWheelZoom: false,
+      attributionControl: true,
+    });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19,
+    }).addTo(map);
+
+    setTimeout(() => map.invalidateSize(), 100);
+
+    const latlngs: [number, number][] = checkpoints.map(c => [c.lat, c.lng]);
+    map.fitBounds(L.latLngBounds(latlngs), { padding: [40, 40] });
+
+    // Checkpoint markers
+    checkpoints.forEach((cp, i) => {
+      const isFirst = i === 0;
+      const isLast = i === checkpoints.length - 1;
+      const color = isFirst ? '#22c55e' : isLast ? '#DC2626' : '#ffffff';
+      const sz = isFirst || isLast ? 14 : 10;
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="
+          width:${sz}px;height:${sz}px;background:${color};
+          border:2px solid rgba(0,0,0,0.6);border-radius:50%;
+          box-shadow:0 0 ${isFirst || isLast ? '8' : '4'}px ${color}80;
+        "></div>`,
+        iconSize: [sz, sz],
+        iconAnchor: [sz/2, sz/2],
+      });
+      L.marker([cp.lat, cp.lng], { icon })
+        .bindTooltip(`<strong>${cp.name}</strong>${cp.note ? `<br><span style="font-size:11px;color:#a1a1aa">${cp.note}</span>` : ''}`, {
+          direction: 'top', offset: [0, -8], className: 'route-tooltip',
+        })
+        .addTo(map);
+    });
+
+    // Ghost straight line while road geometry loads
+    const ghostLine = L.polyline(latlngs, { color: '#3f3f46', weight: 1.5, opacity: 0.5, dashArray: '5 5' }).addTo(map);
+
+    // Animated line
+    const animLine = L.polyline([], { color: '#DC2626', weight: 3, opacity: 0.9 }).addTo(map);
+
+    const dotIcon = L.divIcon({
+      className: '',
+      html: `<div style="
+        width:14px;height:14px;background:#DC2626;
+        border:2px solid white;border-radius:50%;
+        box-shadow:0 0 10px #DC262680;
+      "></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
+    });
+    const movingDot = L.marker(latlngs[0], { icon: dotIcon, zIndexOffset: 1000 }).addTo(map);
+
+    // Fetch road geometry, fall back to straight-line interpolation
+    let path: [number, number][];
+    try {
+      path = await fetchRoadPath(checkpoints);
+      map.removeLayer(ghostLine);
+    } catch {
+      path = interpolatePath(latlngs, 500);
+    }
+
+    let idx = 0;
+    const DURATION_MS = 8000;
+    const INTERVAL_MS = 16;
+    const step = Math.max(1, Math.ceil(path.length / (DURATION_MS / INTERVAL_MS)));
+    setTimeout(() => {
+      const timer = setInterval(() => {
+        idx = Math.min(idx + step, path.length - 1);
+        animLine.setLatLngs(path.slice(0, idx + 1));
+        movingDot.setLatLng(path[idx]);
+        if (idx >= path.length - 1) {
+          clearInterval(timer);
+        }
+      }, INTERVAL_MS);
+    }, 600);
+  }
+
+  initMap();
+</script>
+
+<style is:global>
+  /* Brighten DarkMatter tiles so roads are visible */
+  .leaflet-tile-pane {
+    filter: brightness(1.6) contrast(1.2) !important;
+  }
+  .route-tooltip {
+    background: #1c1c1e !important;
+    border: 1px solid #3f3f46 !important;
+    color: #f4f4f5 !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 12px !important;
+    border-radius: 4px !important;
+    padding: 5px 10px !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
+  }
+  .route-tooltip::before {
+    border-top-color: #3f3f46 !important;
+  }
+  .leaflet-control-attribution {
+    background: rgba(9,9,11,0.8) !important;
+    color: #71717a !important;
+    font-size: 10px !important;
+  }
+  .leaflet-control-attribution a {
+    color: #a1a1aa !important;
+  }
+  .leaflet-control-zoom a {
+    background: #18181b !important;
+    color: #a1a1aa !important;
+    border-color: #3f3f46 !important;
+  }
+  .leaflet-control-zoom a:hover {
+    background: #27272a !important;
+    color: #f4f4f5 !important;
+  }
+</style>

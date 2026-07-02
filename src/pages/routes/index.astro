@@ -5,36 +5,44 @@ import { getCollection } from 'astro:content';
 import { WHATSAPP_GROUP_URL } from '../../config';
 
 const routes = await getCollection('routes');
-
 const regions = ['All', ...new Set(routes.map(r => r.data.region))];
 const difficulties = ['All', ...new Set(routes.map(r => r.data.difficulty))];
 ---
 
 <BaseLayout title="Routes" description="Curated motorcycle routes across Malaysia, tested by Motorfella riders.">
 
-  <section class="py-16 px-4 bg-zinc-950">
+  <section class="py-20 px-6 bg-[#09090B]">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-3xl md:text-4xl font-black text-white mb-3">Explore Malaysian Roads</h1>
-      <p class="text-zinc-400 text-lg mb-10">Curated routes by Motorfella riders — tested, documented.</p>
+
+      <!-- Header -->
+      <div class="mb-14 border-l-2 border-l-red-600 pl-6">
+        <p class="section-label mb-3">Hit the Road</p>
+        <h1 class="font-syncopate font-bold text-4xl md:text-5xl text-white leading-none tracking-tight">
+          EXPLORE<br/>MALAYSIAN ROADS
+        </h1>
+        <p class="text-zinc-500 mt-4 text-sm">Curated routes by Motorfella riders — tested, documented.</p>
+      </div>
 
       <!-- Filters -->
-      <div class="flex flex-wrap gap-4 mb-10" id="filters">
-        <select id="filter-region" class="bg-zinc-800 text-zinc-300 border border-zinc-700 rounded px-3 py-2 text-sm">
+      <div class="flex flex-wrap gap-3 mb-12" id="filters">
+        <select
+          id="filter-region"
+          class="bg-[#111113] border border-zinc-800 text-zinc-400 px-4 py-2.5 text-[11px] font-syncopate tracking-[0.15em] uppercase focus:outline-none focus:border-red-600 transition-colors cursor-pointer"
+        >
           {regions.map(r => <option value={r}>{r === 'All' ? 'All Regions' : r}</option>)}
         </select>
-        <select id="filter-difficulty" class="bg-zinc-800 text-zinc-300 border border-zinc-700 rounded px-3 py-2 text-sm">
-          {difficulties.map(d => <option value={d}>{d === 'All' ? 'All Difficulties' : d}</option>)}
+        <select
+          id="filter-difficulty"
+          class="bg-[#111113] border border-zinc-800 text-zinc-400 px-4 py-2.5 text-[11px] font-syncopate tracking-[0.15em] uppercase focus:outline-none focus:border-red-600 transition-colors cursor-pointer"
+        >
+          {difficulties.map(d => <option value={d}>{d === 'All' ? 'All Difficulties' : d.charAt(0).toUpperCase() + d.slice(1)}</option>)}
         </select>
       </div>
 
       <!-- Route Cards -->
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="routes-grid">
         {routes.map(route => (
-          <div
-            class="route-card"
-            data-region={route.data.region}
-            data-difficulty={route.data.difficulty}
-          >
+          <div class="route-card" data-region={route.data.region} data-difficulty={route.data.difficulty}>
             <RouteCard
               title={route.data.title}
               distance_km={route.data.distance_km}
@@ -48,17 +56,16 @@ const difficulties = ['All', ...new Set(routes.map(r => r.data.difficulty))];
       </div>
 
       <!-- Submit CTA -->
-      <div class="mt-16 pt-12 border-t border-zinc-800 text-center">
-        <p class="text-zinc-400 mb-4">Know a great route?</p>
-        <a
-          href={WHATSAPP_GROUP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-block border border-zinc-600 text-zinc-300 font-medium px-6 py-3 rounded hover:border-white hover:text-white transition-colors"
-        >
-          Share It via WhatsApp
+      <div class="mt-20 pt-12 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div>
+          <p class="section-label mb-2">Know a great route?</p>
+          <p class="text-zinc-500 text-sm">Share it with the community.</p>
+        </div>
+        <a href={WHATSAPP_GROUP_URL} target="_blank" rel="noopener noreferrer" class="btn-secondary whitespace-nowrap">
+          Share via WhatsApp
         </a>
       </div>
+
     </div>
   </section>
 
@@ -72,7 +79,6 @@ const difficulties = ['All', ...new Set(routes.map(r => r.data.difficulty))];
   function applyFilters() {
     const region = regionSelect.value;
     const difficulty = difficultySelect.value;
-
     cards.forEach(card => {
       const matchRegion = region === 'All' || card.dataset.region === region;
       const matchDifficulty = difficulty === 'All' || card.dataset.difficulty === difficulty;

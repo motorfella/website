@@ -10,8 +10,7 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 const story = await getEntry('stories', slug!);
-
-if (!story || story.data.type === 'video') return Astro.redirect('/stories');
+if (!story || story.data.type === 'video') return Astro.redirect('/stories.html');
 
 const { Content } = await render(story);
 
@@ -24,25 +23,38 @@ function formatDate(dateStr: string) {
 
 <BaseLayout title={story.data.title} description={story.data.excerpt}>
 
-  <article class="bg-zinc-950 py-16 px-4">
+  <article class="bg-[#09090B] py-20 px-6">
     <div class="max-w-3xl mx-auto">
-      <a href="/stories" class="text-zinc-500 hover:text-white text-sm transition-colors">← Back to Stories</a>
 
-      <div class="mt-8 mb-6">
-        <div class="aspect-video rounded overflow-hidden bg-zinc-800 mb-6">
-          <img src={story.data.hero_image} alt={story.data.title} class="w-full h-full object-cover" />
-        </div>
-        <h1 class="text-3xl md:text-4xl font-black text-white mb-4">{story.data.title}</h1>
-        <div class="flex gap-3 text-sm text-zinc-500">
-          {story.data.author && <span>{story.data.author}</span>}
-          {story.data.author && <span>·</span>}
-          <span>{formatDate(story.data.date)}</span>
-        </div>
+      <!-- Back -->
+      <a href="/stories.html" class="inline-flex items-center gap-2 text-zinc-400 hover:text-red-400 text-[11px] font-syncopate tracking-[0.2em] uppercase transition-colors duration-200 mb-10 block">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        All Stories
+      </a>
+
+      <!-- Hero Image -->
+      <div class="aspect-video bg-zinc-900 overflow-hidden mb-8">
+        <img src={story.data.hero_image} alt={story.data.title} class="w-full h-full object-cover" />
       </div>
 
-      <div class="prose prose-invert prose-zinc max-w-none text-lg">
+      <!-- Meta -->
+      <p class="section-label mb-4">Story</p>
+      <h1 class="font-syncopate font-bold text-3xl md:text-4xl text-white mb-6 leading-tight tracking-tight">
+        {story.data.title.toUpperCase()}
+      </h1>
+      <div class="flex items-center gap-3 text-[11px] font-syncopate tracking-[0.15em] uppercase text-zinc-400 mb-12 pb-8 border-b border-zinc-900">
+        {story.data.author && <span class="text-zinc-300">{story.data.author}</span>}
+        {story.data.author && <span class="text-zinc-500">·</span>}
+        <span>{formatDate(story.data.date)}</span>
+      </div>
+
+      <!-- Content -->
+      <div class="prose prose-invert prose-zinc max-w-none prose-p:text-zinc-400 prose-p:leading-relaxed prose-headings:font-syncopate prose-headings:tracking-tight prose-headings:uppercase prose-a:text-red-400 prose-a:no-underline hover:prose-a:underline">
         <Content />
       </div>
+
     </div>
   </article>
 

@@ -13,12 +13,12 @@ interface Props {
 
 const { title, author, date, type, excerpt, hero_image, slug, youtube_url, featured = false } = Astro.props;
 
-const href = type === 'video' && youtube_url ? youtube_url : `/stories/${slug}`;
+const href = type === 'video' && youtube_url ? youtube_url : `/stories/${slug}.html`;
 const isExternal = type === 'video' && !!youtube_url;
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('en-MY', {
-    day: 'numeric', month: 'long', year: 'numeric',
+    day: 'numeric', month: 'short', year: 'numeric',
   });
 }
 ---
@@ -27,28 +27,53 @@ function formatDate(dateStr: string) {
   href={href}
   target={isExternal ? '_blank' : undefined}
   rel={isExternal ? 'noopener noreferrer' : undefined}
-  class="block group bg-zinc-900 rounded overflow-hidden hover:bg-zinc-800 transition-colors"
+  class="block group card-dark border-l-2 border-l-transparent hover:border-l-red-600 transition-all duration-300 cursor-pointer h-full"
 >
-  <div class={`bg-zinc-800 overflow-hidden ${featured ? 'aspect-[16/9]' : 'aspect-video'}`}>
-    <div class="relative w-full h-full">
-      <img src={hero_image} alt={title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-      {type === 'video' && (
-        <div class="absolute inset-0 flex items-center justify-center">
-          <div class="bg-black/60 rounded-full w-14 h-14 flex items-center justify-center">
-            <svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </div>
+  <!-- Thumbnail -->
+  <div class={`bg-zinc-900 overflow-hidden relative ${featured ? 'aspect-[16/9]' : 'aspect-video'}`}>
+    <img
+      src={hero_image}
+      alt={title}
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+      loading="lazy"
+    />
+
+    <div class="absolute inset-0 bg-[#09090B]/0 group-hover:bg-[#09090B]/15 transition-colors duration-300"></div>
+
+    <!-- Type badge -->
+    <div class="absolute top-3 left-3">
+      {type === 'video' ? (
+        <span class="bg-red-600 text-white text-[9px] font-bold tracking-widest uppercase px-2 py-1 font-syncopate">
+          VLOG
+        </span>
+      ) : (
+        <span class="bg-zinc-900/90 border border-zinc-700 text-zinc-300 text-[9px] font-bold tracking-widest uppercase px-2 py-1 font-syncopate">
+          STORY
+        </span>
       )}
     </div>
+
+    <!-- Play button for videos -->
+    {type === 'video' && (
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="w-14 h-14 rounded-full bg-red-600/90 group-hover:bg-red-500 group-hover:scale-110 flex items-center justify-center transition-all duration-300 shadow-lg shadow-red-900/40">
+          <svg class="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
+      </div>
+    )}
   </div>
-  <div class="p-4">
-    <h3 class={`text-white font-bold mb-2 ${featured ? 'text-xl' : 'text-base'}`}>{title}</h3>
-    <p class="text-zinc-400 text-sm line-clamp-2 mb-3">{excerpt}</p>
-    <div class="flex items-center gap-2 text-xs text-zinc-500">
-      {author && <span>{author}</span>}
-      {author && <span>·</span>}
+
+  <!-- Content -->
+  <div class="p-4 md:p-5">
+    <h3 class={`text-white font-bold mb-2.5 leading-snug group-hover:text-red-400 transition-colors duration-200 ${featured ? 'text-xl' : 'text-base'}`}>
+      {title}
+    </h3>
+    <p class="text-zinc-500 text-sm line-clamp-2 mb-4 leading-relaxed">{excerpt}</p>
+    <div class="flex items-center gap-2 text-xs text-zinc-400">
+      {author && <span class="text-zinc-300 font-medium">{author}</span>}
+      {author && <span class="text-zinc-500">·</span>}
       <span>{formatDate(date)}</span>
     </div>
   </div>

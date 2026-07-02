@@ -21,6 +21,7 @@ const pageTitle = title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <slot name="head" />
   </head>
   <body>
     <Nav />
@@ -28,5 +29,25 @@ const pageTitle = title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
       <slot />
     </main>
     <Footer />
+
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const el = entry.target as HTMLElement;
+              const delay = el.dataset.delay ? parseFloat(el.dataset.delay) : 0;
+              setTimeout(() => el.classList.add('visible'), delay);
+              observer.unobserve(el);
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: '0px 0px -32px 0px' }
+      );
+
+      document
+        .querySelectorAll('.reveal, .reveal-left, .reveal-scale')
+        .forEach((el) => observer.observe(el));
+    </script>
   </body>
 </html>

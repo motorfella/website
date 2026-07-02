@@ -7,34 +7,34 @@
   "categories": ["all", "rides", "events", "routes", "people"],
   "images": [
     {
-      "src": "/images/gallery/01.jpg",
-      "alt": "Ride photo 1",
+      "src": "/images/hero-about.jpg",
+      "alt": "Ducati Supersport — Motorfella ride night",
       "category": "rides"
     },
     {
-      "src": "/images/gallery/02.jpg",
-      "alt": "Event photo 1",
+      "src": "/images/events/yan-kedah.jpg",
+      "alt": "Full throttle on the street",
       "category": "events"
     },
     {
       "src": "/images/gallery/03.jpg",
-      "alt": "Route photo 1",
-      "category": "routes"
-    },
-    {
-      "src": "/images/gallery/04.jpg",
-      "alt": "Riders 1",
-      "category": "people"
-    },
-    {
-      "src": "/images/gallery/05.jpg",
-      "alt": "Ride photo 2",
+      "alt": "Two wheels, one purpose",
       "category": "rides"
     },
     {
-      "src": "/images/gallery/06.jpg",
-      "alt": "Event photo 2",
-      "category": "events"
+      "src": "/images/gallery/04.jpg",
+      "alt": "Sunset highway ride",
+      "category": "routes"
+    },
+    {
+      "src": "/images/gallery/05.jpg",
+      "alt": "KTM RC — ready to roll",
+      "category": "rides"
+    },
+    {
+      "src": "/images/hero-join.jpg",
+      "alt": "Open road, open throttle",
+      "category": "routes"
     }
   ]
 }

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Motorfella — Route Map Builder</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',system-ui,sans-serif;background:#09090B;color:#f4f4f5;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* PIN gate */
+#pin-gate{position:fixed;inset:0;background:#09090B;z-index:9999;display:flex;align-items:center;justify-content:center}
+#pin-gate.hidden{display:none}
+.pin-box{background:#111113;border:1px solid #27272a;padding:40px;width:320px;text-align:center}
+.pin-box h2{font-family:'Courier New',monospace;font-size:20px;letter-spacing:0.2em;color:#fff;margin-bottom:6px;text-transform:uppercase}
+.pin-box p{color:#71717a;font-size:13px;margin-bottom:24px}
+.pin-box input{width:100%;background:#09090B;border:1px solid #3f3f46;color:#fff;padding:12px 16px;font-size:16px;letter-spacing:0.3em;text-align:center;outline:none;margin-bottom:12px}
+.pin-box input:focus{border-color:#DC2626}
+.pin-box button{width:100%;background:#DC2626;color:#fff;border:none;padding:12px;font-weight:700;font-size:13px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer}
+.pin-box button:hover{background:#ef4444}
+.pin-error{color:#DC2626;font-size:12px;margin-top:8px;min-height:16px}
+
+/* Header */
+header{background:#111113;border-bottom:1px solid #27272a;padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+header h1{font-family:'Courier New',monospace;font-size:14px;letter-spacing:0.25em;text-transform:uppercase;color:#fff}
+header h1 span{color:#DC2626}
+header p{font-size:11px;color:#52525b;letter-spacing:0.05em}
+
+/* Layout */
+#app{display:flex;flex:1;overflow:hidden}
+#sidebar{width:320px;background:#111113;border-right:1px solid #27272a;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+#map{flex:1}
+
+/* Sidebar sections */
+.sb-section{padding:14px 16px;border-bottom:1px solid #1f1f23}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:#DC2626;margin-bottom:8px}
+select,input[type=text]{width:100%;background:#09090B;border:1px solid #27272a;color:#f4f4f5;padding:8px 10px;font-size:13px;outline:none;font-family:inherit}
+select:focus,input[type=text]:focus{border-color:#DC2626}
+select option{background:#09090B}
+
+/* Search results */
+#search-results{background:#09090B;border:1px solid #27272a;border-top:none;max-height:160px;overflow-y:auto;display:none}
+#search-results.open{display:block}
+.result-item{padding:9px 12px;font-size:12px;cursor:pointer;border-bottom:1px solid #1f1f23;color:#a1a1aa;line-height:1.4}
+.result-item:last-child{border-bottom:none}
+.result-item:hover{background:#18181b;color:#fff}
+.result-name{font-weight:600;color:#f4f4f5}
+
+/* Checkpoint list */
+#checkpoint-list{flex:1;overflow-y:auto;padding:0}
+.cp-item{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid #1f1f23;font-size:12px}
+.cp-num{width:22px;height:22px;background:#DC2626;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.cp-name{flex:1;color:#d4d4d8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cp-coords{font-size:10px;color:#52525b}
+.cp-btns{display:flex;gap:4px}
+.cp-btn{background:none;border:1px solid #27272a;color:#71717a;width:22px;height:22px;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center}
+.cp-btn:hover{border-color:#DC2626;color:#DC2626}
+.cp-empty{padding:24px 16px;text-align:center;color:#3f3f46;font-size:12px}
+
+/* Bottom actions */
+#sidebar-footer{padding:12px 16px;border-top:1px solid #27272a;display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.btn-red{background:#DC2626;color:#fff;border:none;padding:10px;font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;width:100%}
+.btn-red:hover{background:#ef4444}
+.btn-ghost{background:none;color:#71717a;border:1px solid #27272a;padding:8px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;width:100%}
+.btn-ghost:hover{border-color:#52525b;color:#a1a1aa}
+
+/* YAML modal */
+#yaml-modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;display:none;align-items:center;justify-content:center;padding:24px}
+#yaml-modal.open{display:flex}
+.modal-box{background:#111113;border:1px solid #27272a;width:100%;max-width:560px;max-height:80vh;display:flex;flex-direction:column}
+.modal-header{padding:16px 20px;border-bottom:1px solid #27272a;display:flex;align-items:center;justify-content:space-between}
+.modal-header h3{font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#fff}
+.modal-header button{background:none;border:none;color:#71717a;font-size:18px;cursor:pointer;line-height:1}
+.modal-header button:hover{color:#fff}
+.modal-body{padding:16px 20px;overflow-y:auto;flex:1}
+.modal-body p{font-size:12px;color:#71717a;margin-bottom:12px;line-height:1.6}
+.modal-body pre{background:#09090B;border:1px solid #27272a;padding:14px;font-size:12px;color:#86efac;overflow-x:auto;white-space:pre;line-height:1.6}
+.modal-footer{padding:12px 20px;border-top:1px solid #27272a}
+.btn-copy{background:#DC2626;color:#fff;border:none;padding:9px 20px;font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer}
+.btn-copy:hover{background:#ef4444}
+.copied-badge{display:none;margin-left:10px;font-size:11px;color:#22c55e}
+.copied-badge.show{display:inline}
+
+/* Leaflet overrides */
+.leaflet-tile-pane{filter:brightness(1.6) contrast(1.2)}
+.leaflet-control-attribution{background:rgba(9,9,11,0.85)!important;color:#71717a!important;font-size:10px!important}
+.leaflet-control-attribution a{color:#71717a!important}
+.leaflet-control-zoom a{background:#18181b!important;color:#a1a1aa!important;border-color:#27272a!important}
+.leaflet-control-zoom a:hover{background:#27272a!important;color:#fff!important}
+.map-tooltip{background:#18181b!important;border:1px solid #27272a!important;color:#f4f4f5!important;font-size:11px!important;font-family:'Outfit',sans-serif!important}
+.map-tooltip::before{border-top-color:#27272a!important}
+</style>
+</head>
+<body>
+
+<!-- PIN gate -->
+<div id="pin-gate">
+  <div class="pin-box">
+    <h2>Motor<span>fella</span></h2>
+    <p>Map Builder — Admin Access</p>
+    <input type="password" id="pin-input" placeholder="Enter PIN" maxlength="20"/>
+    <button onclick="checkPin()">Enter</button>
+    <div class="pin-error" id="pin-error"></div>
+  </div>
+</div>
+
+<header>
+  <h1>Motor<span>fella</span> — Route Map Builder</h1>
+  <p>Build checkpoints → Generate YAML → Paste into Netlify CMS</p>
+</header>
+
+<div id="app">
+  <div id="sidebar">
+
+    <!-- Route selector -->
+    <div class="sb-section">
+      <div class="sb-label">Route</div>
+      <select id="route-select">
+        <option value="peninsula-circuit">Peninsula Malaysia Circuit</option>
+        <option value="phuket-expedition">Malaysia → Phuket</option>
+        <option value="shah-alam-kota-bahru">Shah Alam → Kota Bahru</option>
+      </select>
+    </div>
+
+    <!-- Search -->
+    <div class="sb-section">
+      <div class="sb-label">Search Checkpoint</div>
+      <input type="text" id="search-input" placeholder="e.g. Ipoh, Penang, Hat Yai…"/>
+      <div id="search-results"></div>
+    </div>
+
+    <!-- Checkpoint list -->
+    <div class="sb-label" style="padding:10px 16px 6px">Checkpoints</div>
+    <div id="checkpoint-list"><div class="cp-empty">No checkpoints yet.<br/>Search a place or click map to add.</div></div>
+
+    <!-- Footer actions -->
+    <div id="sidebar-footer">
+      <button class="btn-red" onclick="openYaml()">Generate YAML</button>
+      <button class="btn-ghost" onclick="clearAll()">Clear All</button>
+    </div>
+  </div>
+
+  <div id="map"></div>
+</div>
+
+<!-- YAML modal -->
+<div id="yaml-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Copy to Netlify CMS</h3>
+      <button onclick="closeYaml()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>
+        Open the route file in VS Code or GitHub:<br/>
+        <code style="color:#86efac">src/content/routes/[route-name].md</code><br/><br/>
+        In the frontmatter (between the <code style="color:#86efac">---</code> lines), find or add the <code style="color:#86efac">checkpoints:</code> key and replace it with the block below. Save and deploy.
+      </p>
+      <pre id="yaml-output"></pre>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-copy" onclick="copyYaml()">Copy YAML</button>
+      <span class="copied-badge" id="copied-badge">✓ Copied!</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────
+let checkpoints = [];
+let markers = [];
+let routeLine = null;
+let map = null;
+
+// ── PIN ──────────────────────────────────────────────────────
+const PIN = 'mf2026';
+
+function checkPin() {
+  const val = document.getElementById('pin-input').value;
+  if (val === PIN) {
+    document.getElementById('pin-gate').classList.add('hidden');
+    sessionStorage.setItem('mf_admin', '1');
+    initApp();
+  } else {
+    document.getElementById('pin-error').textContent = 'Wrong PIN. Try again.';
+    document.getElementById('pin-input').value = '';
+  }
+}
+
+document.getElementById('pin-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPin();
+});
+
+if (sessionStorage.getItem('mf_admin') === '1') {
+  document.getElementById('pin-gate').classList.add('hidden');
+  initApp();
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+function initApp() {
+  map = L.map('map', { scrollWheelZoom: true });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19,
+  }).addTo(map);
+
+  setTimeout(() => map.invalidateSize(), 100);
+
+  // Malaysia center
+  map.setView([4.2, 108.0], 6);
+
+  // Click map to add checkpoint via reverse geocode
+  map.on('click', async (e) => {
+    const { lat, lng } = e.latlng;
+    const name = await reverseGeocode(lat, lng);
+    addCheckpoint(name, lat, lng);
+  });
+
+  initSearch();
+}
+
+// ── NOMINATIM SEARCH ──────────────────────────────────────────
+let searchTimer = null;
+
+function initSearch() {
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
+
+  input.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    const q = input.value.trim();
+    if (q.length < 2) { results.classList.remove('open'); return; }
+    searchTimer = setTimeout(() => doSearch(q), 400);
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#search-input') && !e.target.closest('#search-results')) {
+      results.classList.remove('open');
+    }
+  });
+}
+
+async function doSearch(q) {
+  const results = document.getElementById('search-results');
+  results.innerHTML = '<div class="result-item" style="color:#52525b">Searching…</div>';
+  results.classList.add('open');
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=6&accept-language=en`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    const data = await res.json();
+    if (!data.length) {
+      results.innerHTML = '<div class="result-item" style="color:#52525b">No results found</div>';
+      return;
+    }
+    results.innerHTML = data.map(r => `
+      <div class="result-item" onclick="pickResult('${escHtml(r.display_name.split(',')[0])}','${r.lat}','${r.lon}','${escHtml(r.display_name)}')">
+        <div class="result-name">${escHtml(r.display_name.split(',')[0])}</div>
+        <div style="font-size:10px;color:#52525b;margin-top:2px">${escHtml(r.display_name.split(',').slice(1,3).join(',').trim())}</div>
+      </div>`).join('');
+  } catch (e) {
+    results.innerHTML = '<div class="result-item" style="color:#DC2626">Search failed. Check connection.</div>';
+  }
+}
+
+function escHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function pickResult(name, lat, lng, _full) {
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').classList.remove('open');
+  addCheckpoint(name, parseFloat(lat), parseFloat(lng));
+}
+
+async function reverseGeocode(lat, lng) {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=en`);
+    const d = await res.json();
+    return d.address?.city || d.address?.town || d.address?.village || d.address?.county || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  } catch {
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  }
+}
+
+// ── CHECKPOINTS ───────────────────────────────────────────────
+function addCheckpoint(name, lat, lng) {
+  checkpoints.push({ name, lat, lng });
+  renderList();
+  renderMapMarkers();
+}
+
+function removeCheckpoint(i) {
+  checkpoints.splice(i, 1);
+  renderList();
+  renderMapMarkers();
+}
+
+function moveUp(i) {
+  if (i === 0) return;
+  [checkpoints[i-1], checkpoints[i]] = [checkpoints[i], checkpoints[i-1]];
+  renderList();
+  renderMapMarkers();
+}
+
+function moveDown(i) {
+  if (i === checkpoints.length - 1) return;
+  [checkpoints[i], checkpoints[i+1]] = [checkpoints[i+1], checkpoints[i]];
+  renderList();
+  renderMapMarkers();
+}
+
+function clearAll() {
+  checkpoints = [];
+  renderList();
+  renderMapMarkers();
+}
+
+function renderList() {
+  const el = document.getElementById('checkpoint-list');
+  if (!checkpoints.length) {
+    el.innerHTML = '<div class="cp-empty">No checkpoints yet.<br/>Search a place or click map to add.</div>';
+    return;
+  }
+  el.innerHTML = checkpoints.map((cp, i) => `
+    <div class="cp-item">
+      <div class="cp-num">${i + 1}</div>
+      <div style="flex:1;min-width:0">
+        <div class="cp-name" title="${escHtml(cp.name)}">${escHtml(cp.name)}</div>
+        <div class="cp-coords">${cp.lat.toFixed(4)}, ${cp.lng.toFixed(4)}</div>
+      </div>
+      <div class="cp-btns">
+        <button class="cp-btn" onclick="moveUp(${i})" title="Move up">↑</button>
+        <button class="cp-btn" onclick="moveDown(${i})" title="Move down">↓</button>
+        <button class="cp-btn" onclick="removeCheckpoint(${i})" title="Remove" style="color:#DC2626;border-color:#7f1d1d">×</button>
+      </div>
+    </div>`).join('');
+}
+
+async function fetchRoadPath(pts) {
+  const coords = pts.map(c => `${c.lng},${c.lat}`).join(';');
+  const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`);
+  const data = await res.json();
+  if (data.code !== 'Ok') throw new Error(data.message);
+  return data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+}
+
+async function renderMapMarkers() {
+  if (!map) return;
+
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+  if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+
+  if (!checkpoints.length) return;
+
+  checkpoints.forEach((cp, i) => {
+    const isFirst = i === 0;
+    const isLast = i === checkpoints.length - 1;
+    const bg = isFirst ? '#22c55e' : isLast ? '#DC2626' : '#e4e4e7';
+    const size = isFirst || isLast ? 16 : 12;
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="
+        width:${size}px;height:${size}px;background:${bg};
+        border:2px solid rgba(0,0,0,0.5);border-radius:50%;
+        box-shadow:0 0 8px ${bg}80;
+        display:flex;align-items:center;justify-content:center;
+        font-size:7px;font-weight:700;color:#000;
+      ">${i+1}</div>`,
+      iconSize: [size, size],
+      iconAnchor: [size/2, size/2],
+    });
+    const m = L.marker([cp.lat, cp.lng], { icon })
+      .bindTooltip(cp.name, { direction: 'top', offset: [0, -10], className: 'map-tooltip' })
+      .addTo(map);
+    markers.push(m);
+  });
+
+  if (checkpoints.length >= 2) {
+    const fallback = checkpoints.map(c => [c.lat, c.lng]);
+    // Draw straight fallback immediately, replace with road once loaded
+    routeLine = L.polyline(fallback, { color: '#52525b', weight: 2, opacity: 0.5, dashArray: '6 4' }).addTo(map);
+    map.fitBounds(L.latLngBounds(fallback), { padding: [40, 40] });
+    try {
+      const road = await fetchRoadPath(checkpoints);
+      if (routeLine) map.removeLayer(routeLine);
+      routeLine = L.polyline(road, { color: '#DC2626', weight: 2.5, opacity: 0.85 }).addTo(map);
+      map.fitBounds(L.latLngBounds(road), { padding: [40, 40] });
+    } catch {
+      // keep fallback dashed line, color it red
+      routeLine.setStyle({ color: '#DC2626', dashArray: '8 4' });
+    }
+  }
+}
+
+// ── YAML OUTPUT ───────────────────────────────────────────────
+function openYaml() {
+  if (!checkpoints.length) {
+    alert('Add at least one checkpoint first.');
+    return;
+  }
+  const lines = ['checkpoints:'];
+  checkpoints.forEach(cp => {
+    lines.push(`  - name: "${cp.name}"`);
+    lines.push(`    lat: ${cp.lat.toFixed(6)}`);
+    lines.push(`    lng: ${cp.lng.toFixed(6)}`);
+  });
+  document.getElementById('yaml-output').textContent = lines.join('\n');
+  document.getElementById('yaml-modal').classList.add('open');
+  document.getElementById('copied-badge').classList.remove('show');
+}
+
+function closeYaml() {
+  document.getElementById('yaml-modal').classList.remove('open');
+}
+
+async function copyYaml() {
+  const text = document.getElementById('yaml-output').textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    document.getElementById('copied-badge').classList.add('show');
+    setTimeout(() => document.getElementById('copied-badge').classList.remove('show'), 2500);
+  } catch {
+    document.getElementById('yaml-output').select?.();
+  }
+}
+
+document.getElementById('yaml-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('yaml-modal')) closeYaml();
+});
+</script>
+</body>
+</html>

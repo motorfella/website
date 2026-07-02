@@ -3,10 +3,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import JoinBanner from '../components/JoinBanner.astro';
 
 const values = [
-  { icon: '🛡️', title: 'Safety First', desc: 'Full gear. Proper briefings. No exceptions on the road.' },
-  { icon: '🧭', title: 'Discipline On Road', desc: 'Ride formation, speed discipline, and sweep riders on every trip.' },
-  { icon: '🤝', title: 'Brotherhood', desc: 'We look out for each other. Nobody gets left behind.' },
-  { icon: '🏔️', title: 'Growth & Adventure', desc: 'Push your limits wisely. Every ride makes you a better rider.' },
+  {
+    icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`,
+    title: 'Safety First',
+    desc: 'Full gear. Proper briefings. No exceptions on the road.',
+  },
+  {
+    icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6-10l6-3m0 0l5.447 2.724A1 1 0 0121 7.618v10.764a1 1 0 01-1.447.894L15 17m0-13v13"/></svg>`,
+    title: 'Discipline On Road',
+    desc: 'Ride formation, speed discipline, and sweep riders on every trip.',
+  },
+  {
+    icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`,
+    title: 'Brotherhood',
+    desc: 'We look out for each other. Nobody gets left behind.',
+  },
+  {
+    icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>`,
+    title: 'Growth & Adventure',
+    desc: 'Push your limits wisely. Every ride makes you a better rider.',
+  },
 ];
 
 const founders = [
@@ -18,11 +34,11 @@ const founders = [
     image: '/images/team/founder-1.jpg',
   },
   {
-    name: 'REPLACE WITH NAME',
+    name: 'Adam Ixa',
     role: 'Co-Founder',
-    bike: 'REPLACE WITH BIKE',
-    quote: 'REPLACE WITH QUOTE',
-    image: '/images/team/founder-2.jpg',
+    bike: 'Aveta Viper 180',
+    quote: 'My bike might be the slowest, but it rarely gets towed.',
+    image: '/images/team/adam.png',
   },
 ];
 ---
@@ -30,24 +46,31 @@ const founders = [
 <BaseLayout title="About" description="The story behind Motorfella — a Malaysian motorcycle community built on brotherhood, safety, and adventure.">
 
   <!-- PAGE HERO -->
-  <section class="relative py-24 px-4 text-center bg-zinc-950">
+  <section class="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/hero-about.jpg" alt="Motorfella riders" class="w-full h-full object-cover opacity-25" />
+      <img src="/images/events/yan-kedah.jpg" alt="Motorfella riders" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#09090B]/60 via-[#09090B]/70 to-[#09090B]"></div>
     </div>
-    <div class="relative z-10 max-w-2xl mx-auto">
-      <h1 class="text-4xl md:text-5xl font-black text-white mb-4">We Are Motorfella</h1>
-      <p class="text-zinc-300 text-xl">Riders. Brothers. Storytellers.</p>
+    <div class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-red-600"></div>
+    <div class="relative z-10 max-w-3xl mx-auto px-6 text-center">
+      <p class="section-label mb-4">The Story</p>
+      <h1 class="font-syncopate font-bold text-4xl md:text-6xl text-white leading-none tracking-tight mb-4">
+        WE ARE<br/><span class="text-red-500">MOTORFELLA</span>
+      </h1>
+      <p class="text-zinc-400 text-lg mt-6">Riders. Brothers. Storytellers.</p>
     </div>
   </section>
 
   <!-- OUR STORY -->
-  <section class="py-16 px-4 bg-zinc-950">
+  <section class="py-20 px-6 bg-[#09090B]">
     <div class="max-w-3xl mx-auto">
-      <h2 class="text-2xl font-bold text-white mb-6">Our Story</h2>
-      <div class="mb-8">
-        <img src="/images/about-group.jpg" alt="Motorfella group" class="w-full rounded object-cover aspect-video bg-zinc-800" />
+      <p class="section-label mb-4">Origin</p>
+      <span class="speed-line-sm mb-6 block"></span>
+      <h2 class="font-syncopate text-2xl md:text-3xl font-bold text-white mb-10 tracking-tight">OUR STORY</h2>
+      <div class="mb-10 aspect-video bg-zinc-900 overflow-hidden">
+        <img src="/images/about-group.jpg" alt="Motorfella group" class="w-full h-full object-cover" />
       </div>
-      <div class="prose prose-invert prose-zinc max-w-none text-zinc-300 text-lg leading-relaxed space-y-4">
+      <div class="prose prose-invert prose-zinc max-w-none text-zinc-400 text-base leading-relaxed space-y-5">
         <p>REPLACE WITH REAL ORIGIN STORY — who started it, when, why.</p>
         <p>REPLACE WITH WHAT THE COMMUNITY HAS BECOME — member count, rides done, distances covered.</p>
         <p>REPLACE WITH THE FUTURE — where Motorfella is going.</p>
@@ -56,15 +79,18 @@ const founders = [
   </section>
 
   <!-- VALUES -->
-  <section class="py-16 px-4 bg-zinc-900">
+  <section class="py-20 px-6 bg-[#0D0D0F] border-t border-zinc-900">
     <div class="max-w-5xl mx-auto">
-      <h2 class="text-2xl font-bold text-white mb-10 text-center">What We Stand For</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="text-center mb-14">
+        <p class="section-label mb-4">Our Code</p>
+        <h2 class="font-syncopate text-2xl md:text-3xl font-bold text-white tracking-tight">WHAT WE STAND FOR</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
         {values.map(v => (
-          <div class="bg-zinc-800 rounded p-5 text-center">
-            <div class="text-3xl mb-3">{v.icon}</div>
-            <h3 class="text-white font-bold mb-2">{v.title}</h3>
-            <p class="text-zinc-400 text-sm">{v.desc}</p>
+          <div class="card-dark border-t-2 border-t-red-600 p-6 group hover:border-t-red-500 transition-all duration-300">
+            <div class="text-red-500 mb-4 opacity-80 group-hover:opacity-100 transition-opacity" set:html={v.icon} />
+            <h3 class="font-syncopate text-white font-bold text-sm tracking-wide mb-3 uppercase">{v.title}</h3>
+            <p class="text-zinc-500 text-sm leading-relaxed">{v.desc}</p>
           </div>
         ))}
       </div>
@@ -72,21 +98,23 @@ const founders = [
   </section>
 
   <!-- FOUNDERS -->
-  <section class="py-16 px-4 bg-zinc-950">
+  <section class="py-20 px-6 bg-[#09090B] border-t border-zinc-900">
     <div class="max-w-3xl mx-auto">
-      <h2 class="text-2xl font-bold text-white mb-10">The Founding Riders</h2>
-      <div class="space-y-8">
+      <p class="section-label mb-4">The People</p>
+      <span class="speed-line-sm mb-6 block"></span>
+      <h2 class="font-syncopate text-2xl font-bold text-white mb-12 tracking-tight">THE FOUNDING RIDERS</h2>
+      <div class="space-y-10">
         {founders.map(f => (
-          <div class="flex gap-5 items-start">
+          <div class="flex gap-6 items-start border-l-2 border-l-red-600 pl-6">
             <img
               src={f.image}
               alt={f.name}
-              class="w-20 h-20 rounded-full object-cover bg-zinc-800 flex-shrink-0"
+              class="w-16 h-16 md:w-20 md:h-20 object-cover bg-zinc-900 flex-shrink-0 grayscale"
             />
             <div>
-              <p class="text-white font-bold text-lg">{f.name}</p>
-              <p class="text-zinc-500 text-sm mb-2">{f.role} · {f.bike}</p>
-              <p class="text-zinc-300 italic">"{f.quote}"</p>
+              <p class="font-syncopate text-white font-bold text-sm tracking-wide uppercase mb-1">{f.name}</p>
+              <p class="text-red-500 text-[11px] tracking-[0.2em] uppercase font-syncopate mb-3">{f.role} · {f.bike}</p>
+              <p class="text-zinc-400 italic text-sm leading-relaxed">"{f.quote}"</p>
             </div>
           </div>
         ))}
@@ -94,6 +122,6 @@ const founders = [
     </div>
   </section>
 
-  <JoinBanner heading="Ready to ride with us?" />
+  <JoinBanner heading="READY TO RIDE?" />
 
 </BaseLayout>

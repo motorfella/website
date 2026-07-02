@@ -68,6 +68,16 @@ collections:
       - { label: "Hero Image", name: "hero_image", widget: "image", required: false }
       - { label: "Key Stops", name: "key_stops", widget: "list", field: { label: "Stop", name: "stop", widget: "string" } }
       - { label: "Tips", name: "tips", widget: "list", field: { label: "Tip", name: "tip", widget: "string" } }
+      - label: "Checkpoints (Map)"
+        name: "checkpoints"
+        widget: "list"
+        required: false
+        hint: "Add checkpoints for the animated route map. Use /admin/map to build these visually."
+        fields:
+          - { label: "Place Name", name: "name", widget: "string" }
+          - { label: "Latitude", name: "lat", widget: "number", value_type: "float" }
+          - { label: "Longitude", name: "lng", widget: "number", value_type: "float" }
+          - { label: "Note (optional)", name: "note", widget: "text", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
   - name: "events"

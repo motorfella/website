@@ -6,7 +6,7 @@ meeting_point: "Shell Station, Bukit Jelutong, Shah Alam"
 departure_time: "6:30 AM"
 distance_km: 120
 status: "upcoming"
-hero_image: "/images/events/port-dickson.jpg"
+hero_image: "/images/events/yan-kedah.jpg"
 whatsapp_link: "https://chat.whatsapp.com/REPLACE_WITH_ACTUAL_LINK"
 ---
 

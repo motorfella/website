@@ -18,33 +18,40 @@ const restStories = textStories.filter(s => s.id !== featured?.id);
 
 <BaseLayout title="Stories & Videos" description="Ride stories, expedition films, and route recaps from Motorfella.">
 
-  <section class="py-16 px-4 bg-zinc-950">
+  <section class="py-20 px-6 bg-[#09090B]">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-3xl md:text-4xl font-black text-white mb-3">Stories & Videos</h1>
-      <p class="text-zinc-400 text-lg mb-10">From the road. By our riders.</p>
+
+      <!-- Header -->
+      <div class="mb-14 border-l-2 border-l-red-600 pl-6">
+        <p class="section-label mb-3">From the Road</p>
+        <h1 class="font-syncopate font-bold text-4xl md:text-5xl text-white leading-none tracking-tight">
+          STORIES<br/>& VLOGS
+        </h1>
+        <p class="text-zinc-500 mt-4 text-sm tracking-wide">By our riders. For our riders.</p>
+      </div>
 
       <!-- Tabs -->
-      <div class="flex gap-0 mb-10 border-b border-zinc-800">
+      <div class="flex gap-0 mb-12 border-b border-zinc-900">
         <button
           id="tab-stories"
-          class="tab-btn px-6 py-3 text-sm font-medium text-white border-b-2 border-white transition-colors"
+          class="tab-btn px-6 py-3 text-[11px] font-bold tracking-[0.2em] uppercase font-syncopate text-white border-b-2 border-red-600 transition-colors cursor-pointer"
           data-tab="stories"
         >
           Stories
         </button>
         <button
           id="tab-videos"
-          class="tab-btn px-6 py-3 text-sm font-medium text-zinc-500 border-b-2 border-transparent hover:text-zinc-300 transition-colors"
+          class="tab-btn px-6 py-3 text-[11px] font-bold tracking-[0.2em] uppercase font-syncopate text-zinc-400 border-b-2 border-transparent hover:text-zinc-300 transition-colors cursor-pointer"
           data-tab="videos"
         >
-          Videos
+          Vlogs
         </button>
       </div>
 
       <!-- Stories Panel -->
       <div id="panel-stories">
         {featured && (
-          <div class="mb-10">
+          <div class="mb-8">
             <StoryCard
               title={featured.data.title}
               author={featured.data.author}
@@ -57,19 +64,21 @@ const restStories = textStories.filter(s => s.id !== featured?.id);
             />
           </div>
         )}
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {restStories.map(story => (
-            <StoryCard
-              title={story.data.title}
-              author={story.data.author}
-              date={story.data.date}
-              type={story.data.type}
-              excerpt={story.data.excerpt}
-              hero_image={story.data.hero_image}
-              slug={story.id}
-            />
-          ))}
-        </div>
+        {restStories.length > 0 && (
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {restStories.map(story => (
+              <StoryCard
+                title={story.data.title}
+                author={story.data.author}
+                date={story.data.date}
+                type={story.data.type}
+                excerpt={story.data.excerpt}
+                hero_image={story.data.hero_image}
+                slug={story.id}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <!-- Videos Panel -->
@@ -91,17 +100,21 @@ const restStories = textStories.filter(s => s.id !== featured?.id);
       </div>
 
       <!-- Share CTA -->
-      <div class="mt-16 pt-12 border-t border-zinc-800 text-center">
-        <p class="text-zinc-400 mb-4">Have a story to share?</p>
+      <div class="mt-20 pt-12 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div>
+          <p class="section-label mb-2">Got a story?</p>
+          <p class="text-zinc-500 text-sm">Share your ride with the community.</p>
+        </div>
         <a
           href={WHATSAPP_GROUP_URL}
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-block border border-zinc-600 text-zinc-300 font-medium px-6 py-3 rounded hover:border-white hover:text-white transition-colors"
+          class="btn-secondary whitespace-nowrap"
         >
           Share via WhatsApp
         </a>
       </div>
+
     </div>
   </section>
 
@@ -117,14 +130,13 @@ const restStories = textStories.filter(s => s.id !== featured?.id);
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const target = tab.dataset.tab!;
-
       tabs.forEach(t => {
-        t.classList.toggle('text-white', t.dataset.tab === target);
-        t.classList.toggle('border-white', t.dataset.tab === target);
-        t.classList.toggle('text-zinc-500', t.dataset.tab !== target);
-        t.classList.toggle('border-transparent', t.dataset.tab !== target);
+        const active = t.dataset.tab === target;
+        t.classList.toggle('text-white', active);
+        t.classList.toggle('border-red-600', active);
+        t.classList.toggle('text-zinc-400', !active);
+        t.classList.toggle('border-transparent', !active);
       });
-
       Object.entries(panels).forEach(([key, panel]) => {
         panel?.classList.toggle('hidden', key !== target);
       });

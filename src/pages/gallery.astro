@@ -8,17 +8,27 @@ const categories = gallery.categories;
 ---
 
 <BaseLayout title={gallery.title} description={gallery.description}>
-  <section class="py-16 px-4 bg-zinc-950">
+  <section class="py-20 px-6 bg-[#09090B]">
     <div class="max-w-7xl mx-auto">
-      <h1 class="text-3xl md:text-4xl font-black text-white mb-3">{gallery.title}</h1>
-      <p class="text-zinc-400 text-lg mb-10">{gallery.intro}</p>
 
-      <div class="flex flex-wrap gap-3 mb-10" id="category-filters">
+      <!-- Header -->
+      <div class="mb-12 border-l-2 border-l-red-600 pl-6">
+        <p class="section-label mb-3">In the Lens</p>
+        <h1 class="font-syncopate font-bold text-4xl md:text-5xl text-white leading-none tracking-tight">
+          {gallery.title.toUpperCase()}
+        </h1>
+        <p class="text-zinc-500 mt-4 text-sm">{gallery.intro}</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-2 mb-12" id="category-filters">
         {categories.map((cat) => (
           <button
             class:list={[
-              'filter-btn px-4 py-2 rounded text-sm font-medium transition-colors',
-              cat === 'all' ? 'bg-white text-zinc-950' : 'bg-zinc-800 text-zinc-400 hover:text-white',
+              'filter-btn text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 font-syncopate transition-all duration-200 cursor-pointer',
+              cat === 'all'
+                ? 'bg-red-600 text-white'
+                : 'border border-zinc-800 text-zinc-500 hover:border-red-600 hover:text-red-400',
             ]}
             data-category={cat}
           >
@@ -27,30 +37,36 @@ const categories = gallery.categories;
         ))}
       </div>
 
-      <div class="columns-2 md:columns-3 gap-4 space-y-4" id="gallery-grid">
+      <!-- Gallery Grid -->
+      <div class="columns-2 md:columns-3 gap-3 space-y-3" id="gallery-grid">
         {images.map((img, i) => (
-          <div class="gallery-item break-inside-avoid" data-category={img.category}>
+          <div class="gallery-item break-inside-avoid group overflow-hidden" data-category={img.category}>
             <img
               src={img.src}
               alt={img.alt}
-              class="w-full rounded object-cover hover:opacity-90 transition-opacity cursor-pointer"
+              class="w-full object-cover group-hover:scale-105 transition-transform duration-700 bg-zinc-900"
               loading={i < 6 ? 'eager' : 'lazy'}
             />
           </div>
         ))}
       </div>
 
-      <div class="mt-16 pt-12 border-t border-zinc-800 text-center">
-        <p class="text-zinc-400 mb-4">{gallery.share_cta_text}</p>
+      <!-- Share CTA -->
+      <div class="mt-20 pt-12 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div>
+          <p class="section-label mb-2">Got photos?</p>
+          <p class="text-zinc-500 text-sm">{gallery.share_cta_text}</p>
+        </div>
         <a
           href={WHATSAPP_GROUP_URL}
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-block border border-zinc-600 text-zinc-300 font-medium px-6 py-3 rounded hover:border-white hover:text-white transition-colors"
+          class="btn-secondary whitespace-nowrap"
         >
           {gallery.share_cta_label}
         </a>
       </div>
+
     </div>
   </section>
 </BaseLayout>
@@ -62,18 +78,19 @@ const categories = gallery.categories;
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.category!;
-
       filterBtns.forEach((button) => {
-        const isActive = button.dataset.category === target;
-        button.classList.toggle('bg-white', isActive);
-        button.classList.toggle('text-zinc-950', isActive);
-        button.classList.toggle('bg-zinc-800', !isActive);
-        button.classList.toggle('text-zinc-400', !isActive);
+        const active = button.dataset.category === target;
+        button.classList.toggle('bg-red-600', active);
+        button.classList.toggle('text-white', active);
+        button.classList.toggle('border-zinc-800', !active);
+        button.classList.toggle('text-zinc-500', !active);
+        button.classList.remove('border-red-600', 'text-red-400');
+        if (!active) {
+          button.classList.add('border-zinc-800', 'text-zinc-500');
+        }
       });
-
       items.forEach((item) => {
-        const match = target === 'all' || item.dataset.category === target;
-        item.style.display = match ? '' : 'none';
+        item.style.display = target === 'all' || item.dataset.category === target ? '' : 'none';
       });
     });
   });
