@@ -21,6 +21,7 @@ const pageTitle = title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <slot name="head" />
   </head>
   <body>
@@ -29,6 +30,18 @@ const pageTitle = title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
       <slot />
     </main>
     <Footer />
+
+    <script>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on('init', (user) => {
+          if (!user) {
+            window.netlifyIdentity.on('login', () => {
+              document.location.href = '/admin/';
+            });
+          }
+        });
+      }
+    </script>
 
     <script>
       const observer = new IntersectionObserver(
