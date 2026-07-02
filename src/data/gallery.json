@@ -4,10 +4,16 @@
   "intro": "Real rides. Real moments.",
   "share_cta_text": "Share your ride photos with the community.",
   "share_cta_label": "Send to WhatsApp Group",
-  "categories": ["all", "rides", "events", "routes", "people"],
+  "categories": [
+    "all",
+    "rides",
+    "events",
+    "routes",
+    "people"
+  ],
   "images": [
     {
-      "src": "/images/hero-about.jpg",
+      "src": "/images/uploads/20250429_015913632_ios.jpg",
       "alt": "Ducati Supersport — Motorfella ride night",
       "category": "rides"
     },
