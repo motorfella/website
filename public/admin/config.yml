@@ -1,8 +1,7 @@
 local_backend: true
 
 backend:
-  name: github
-  repo: REPLACE_WITH_GITHUB_OWNER/motorfella
+  name: git-gateway
   branch: master
 
 media_folder: "public/images/uploads"
