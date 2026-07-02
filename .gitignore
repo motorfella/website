@@ -24,3 +24,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .gstack/
+
+# stray Claude Code skill files (accidentally copied into public/images)
+public/images/.claude/
